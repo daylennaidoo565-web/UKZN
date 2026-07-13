@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Howard - Staff Portal</title>
+  <title>UKZN Receptionist Portal</title>
 
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
@@ -518,6 +518,38 @@
         height:56px;
       }
     }
+  /* Public-facing welcome and login experience */
+  :root { --ukzn-blue: #064c8e; --ukzn-deep: #003a70; --ink: #073f78; }
+  body:has(#public-home.active), body:has(#login-screen.active) { background: #fff; color: #172b4d; font-family: Raleway, "Segoe UI", sans-serif; }
+  .public-screen { display: none; min-height: 100vh; width: 100%; }
+  .public-screen.active { display: block; }
+  body:has(#public-home.active) #header, body:has(#login-screen.active) #header { display: none; }
+  body:has(#public-home.active) #content, body:has(#login-screen.active) #content { display: block; overflow: visible; }
+  .public-nav { height: 118px; display: flex; align-items: center; justify-content: space-between; padding: 14px 4.5%; background: var(--ukzn-deep); color: #fff; }
+  .ukzn-brand { display: flex; align-items: center; gap: 11px; color: #fff; text-decoration: none; font-weight: 800; line-height: 1.05; letter-spacing: .02em; }
+  .brand-mark { width: 56px; height: 56px; border-radius: 50% 50% 45% 45%; background: linear-gradient(135deg,#f5c518 0 13%,#e21f26 13% 21%,#0b172a 21% 61%,#19a8d8 61%); border: 3px solid #fff; box-shadow: inset 0 0 0 5px #111c33; }
+  .brand-copy { font-size: 15px; } .brand-copy small { display:block; font-size: 9px; margin-top: 4px; letter-spacing: .14em; }
+  .public-links { display: flex; gap: 31px; align-items: center; }
+  .public-links a { border: 0; background: none; color: #fff; font: inherit; font-size: 17px; text-decoration: none; cursor: pointer; padding: 8px 0; }
+  .public-links a:hover, .public-links a:focus { border-bottom: 2px solid #fff; outline: none; }
+  .landing-hero { min-height: calc(100vh - 118px); display: grid; place-items: center; text-align: center; padding: 90px 9%; color: #fff; background: linear-gradient(rgba(4,48,89,.68),rgba(4,48,89,.68)), url('https://ww2.coh.ukzn.ac.za/wp-content/uploads/2020/06/UKZNHowardCollegeCampus-Custom-1.jpg') center/cover; }
+  .landing-inner { max-width: 940px; } .landing-inner h1 { font-size: clamp(48px,7vw,80px); margin-bottom: 26px; letter-spacing: -.04em; }
+  .landing-inner p { font-size: clamp(15px,1.55vw,18px); line-height: 1.55; font-style: italic; } .outline-button { display:inline-block; margin-top: 34px; padding: 13px 38px; border: 1px solid #fff; background: transparent; color:#fff; font:inherit; font-size:17px; cursor:pointer; }
+  .outline-button:hover { background:#fff; color:var(--ukzn-deep); }
+  #login-screen { padding: 0; align-items: stretch; justify-content: stretch; }
+  #login-screen.active { display: block; }
+  .login-layout { min-height: 100vh; display: grid; grid-template-columns: 55% 45%; }
+  .welcome-panel { min-height: 100%; display:flex; align-items:center; padding: 10%; color:#fff; background: linear-gradient(rgba(0,127,192,.22),rgba(0,104,173,.22)), url('https://images.unsplash.com/photo-1549490349-8643362247b2?auto=format&fit=crop&w=1600&q=85') center/cover; }
+  .welcome-panel h1 { font-family: Georgia, serif; font-size: clamp(58px,8vw,124px); line-height: .98; max-width: 650px; text-shadow: 0 3px 10px rgba(0,0,0,.13); }
+  .login-side { display:flex; flex-direction:column; background:#fff; } .login-side .public-nav { height:118px; padding-left: 10%; background: var(--ukzn-deep); }
+  .login-side .ukzn-brand { display:none; } .login-side .public-links { margin-left:auto; }
+  .login-box { width:min(390px,78%); margin:auto; padding: 0 0 36px; border: 0; border-left: 5px solid var(--ukzn-blue); border-radius:0; background: transparent; box-shadow: 12px 9px 0 -8px rgba(6,76,142,.24); }
+  .title { color: var(--ink); font-size: 42px; font-weight: 800; letter-spacing: .08em; margin: 0 0 30px 45px; }
+  .sub { display:none; } .login-box input { height: 50px; margin: 0 0 22px; padding: 0 13px; color:#1d2a3d; background:#fff; border: 1px solid #c9c9c9; border-radius:6px; font-family:inherit; }
+  .field-label { display:block; margin:0 0 8px; color:var(--ink); font-weight:600; font-size:17px; } .field-label span { display:inline-block; width:25px; text-align:center; }
+  .login-box .primary { height:52px; margin: 7px 0 0; border-radius:6px; background:var(--ukzn-blue); font-family:inherit; font-size:18px; font-weight:600; } .login-box .primary:hover { background:var(--ukzn-deep); }
+  .login-box .hint { color:#b42318; text-align:center; font-size:13px; }
+  @media(max-width:760px) { .public-nav { height:auto; min-height:82px; padding:12px 18px; } .brand-mark{width:42px;height:42px}.brand-copy{font-size:11px}.public-links{gap:13px}.public-links a{font-size:12px}.landing-hero{min-height:calc(100vh - 82px);padding:50px 7%}.login-layout{grid-template-columns:1fr}.welcome-panel{min-height:35vh;padding:10%}.welcome-panel h1{font-size:62px}.login-side .public-nav{height:auto;padding:12px 18px}.login-box{width:min(390px,82%);margin:65px auto}.title{font-size:34px;margin-left:25px} }
   </style>
 </head>
 
@@ -531,17 +563,13 @@
 </div>
 
 <div id="content">
-  <div id="login-screen" class="screen active">
-    <div class="login-box">
-      <div class="title">Staff Login</div>
-      <div class="sub">Login to receive kiosk calls, post notices, and manage visitor access.</div>
+  <div id="public-home" class="public-screen active">
+    <nav class="public-nav"><a class="ukzn-brand" href="#home" onclick="showSection('public-home');return false"><span class="brand-mark" aria-hidden="true"></span><span class="brand-copy">UNIVERSITY OF<br>KWAZULU-NATAL<small>INYUVESI YAKWAZULU-NATALI</small></span></a><div class="public-links"><a href="#home" onclick="showSection('public-home');return false">HOME</a><a href="#about">ABOUT</a><a href="#courses">COURSES</a><a href="#contact">CONTACT</a><a href="#login" onclick="showSection('login-screen');return false">LOGIN</a></div></nav>
+    <main class="landing-hero" id="home"><div class="landing-inner"><h1>Inspiring Greatness</h1><p>Welcome to the University of KwaZulu-Natal receptionist portal. Connect students and visitors with the people, notices, and access they need.</p><button class="outline-button" onclick="showSection('login-screen')">Login</button></div></main>
+  </div>
 
-      <input id="login-email" type="email" placeholder="Email address" autocomplete="username">
-      <input id="login-password" type="password" placeholder="Password" autocomplete="current-password">
-
-      <button class="primary" id="continue-btn" onclick="login()">Login</button>
-      <div class="hint" id="login-hint" style="margin-top:12px"></div>
-    </div>
+  <div id="login-screen" class="screen">
+    <div class="login-layout"><div class="welcome-panel"><h1>Welcome<br>Back!</h1></div><div class="login-side"><nav class="public-nav"><div class="public-links"><a href="#home" onclick="showSection('public-home');return false">HOME</a><a href="#about">ABOUT</a><a href="#courses">COURSES</a><a href="#contact">CONTACT</a><a href="#login">LOGIN</a></div></nav><div class="login-box"><div class="title">LOGIN</div><label class="field-label" for="login-email"><span aria-hidden="true">✉</span> Email</label><input id="login-email" type="email" placeholder="" autocomplete="username"><label class="field-label" for="login-password"><span aria-hidden="true">▣</span> Password</label><input id="login-password" type="password" placeholder="" autocomplete="current-password"><button class="primary" id="continue-btn" onclick="login()">Login</button><div class="hint" id="login-hint" style="margin-top:12px"></div></div></div></div>
   </div>
 
   <div id="home-screen" class="screen">
@@ -1248,6 +1276,9 @@ function showSection(id) {
   document.body.classList.toggle('call-active', id === 'state-in-call');
 
   document.querySelectorAll('.screen').forEach(el => {
+    el.classList.toggle('active', el.id === id);
+  });
+  document.querySelectorAll('.public-screen').forEach(el => {
     el.classList.toggle('active', el.id === id);
   });
 }
