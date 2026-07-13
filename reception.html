@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UKZN Receptionist Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
@@ -550,6 +554,99 @@
   .login-box .primary { height:52px; margin: 7px 0 0; border-radius:6px; background:var(--ukzn-blue); font-family:inherit; font-size:18px; font-weight:600; } .login-box .primary:hover { background:var(--ukzn-deep); }
   .login-box .hint { color:#b42318; text-align:center; font-size:13px; }
   @media(max-width:760px) { .public-nav { height:auto; min-height:82px; padding:12px 18px; } .brand-mark{width:42px;height:42px}.brand-copy{font-size:11px}.public-links{gap:13px}.public-links a{font-size:12px}.landing-hero{min-height:calc(100vh - 82px);padding:50px 7%}.login-layout{grid-template-columns:1fr}.welcome-panel{min-height:35vh;padding:10%}.welcome-panel h1{font-size:62px}.login-side .public-nav{height:auto;padding:12px 18px}.login-box{width:min(390px,82%);margin:65px auto}.title{font-size:34px;margin-left:25px} }
+
+  /* Faithful public homepage recreation */
+  body:has(#public-home.active) { overflow-x: hidden; }
+  #public-home, #public-home * { font-family: "Raleway", sans-serif; }
+  #public-home { color:#4f4f4f; background:#fff; }
+  #public-home .landing-hero { position:relative; min-height:100vh; padding:0; display:flex; align-items:center; justify-content:center; background-image:linear-gradient(rgba(32,49,70,.70),rgba(32,49,70,.70)),url("ImagesForProject/UKZNHowardCollegeCampus-Custom-1.jpg"); background-position:center; background-size:cover; }
+  #public-home .public-nav { position:absolute; inset:0 0 auto 0; z-index:5; height:auto; min-height:82px; padding:14px 4.2%; background:transparent; }
+  #public-home .ukzn-brand { display:block; }
+  #public-home .ukzn-brand img { display:block; width:136px; height:auto; }
+  #public-home .public-links { gap:0; margin-left:auto; }
+  #public-home .public-links a { position:relative; margin-left:27px; padding:8px 0; color:#fff; font-size:15px; font-weight:400; }
+  #public-home .public-links a::after { content:""; position:absolute; left:50%; bottom:2px; width:0; height:2px; background:#004080; transform:translateX(-50%); transition:width .3s; }
+  #public-home .public-links a:hover { border:0; }
+  #public-home .public-links a:hover::after { width:100%; }
+  .menu-toggle { display:none; border:0; background:transparent; color:#fff; font-size:23px; cursor:pointer; }
+  #public-home .landing-inner { width:92%; max-width:1120px; padding-top:35px; text-align:center; color:#fff; }
+  #public-home .landing-inner h1 { margin:0 0 34px; font-size:clamp(48px,5.5vw,80px); line-height:1; font-weight:700; letter-spacing:-.025em; }
+  #public-home .landing-inner p { margin:0 auto; font-size:14px; line-height:1.5; font-style:italic; color:#fff; }
+  #public-home .outline-button { margin-top:42px; padding:10px 30px; border:1px solid rgba(255,255,255,.8); font-size:15px; }
+  #public-home .outline-button:hover { background:#004080; color:#fff; border-color:#004080; }
+  .courses-section { width:80%; max-width:1120px; margin:0 auto; padding:72px 0 30px; text-align:center; }
+  .courses-section h2, .about-copy h2, .campus-title, .contact-section h2 { color:#050505; font-size:42px; line-height:1.1; font-weight:700; }
+  .courses-section .section-intro { margin:17px auto 5px; color:#777; font-size:13px; line-height:1.45; font-weight:300; }
+  .course-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:30px; }
+  .course-card { height:275px; overflow:hidden; padding:17px 24px; border-radius:8px; background:#004b8d; color:#fff; transition:.35s; }
+  .course-card:hover { box-shadow:0 0 36px rgba(0,0,0,.38); transform:translateY(-2px); }
+  .course-card h3 { margin:0 0 12px; font-size:21px; font-weight:700; }
+  .course-card p { color:#fff; font-size:11.5px; line-height:1.45; font-weight:300; }
+  .about-section { width:100%; padding:10px 1.3% 65px; }
+  .about-grid { display:grid; grid-template-columns:48% 1fr; gap:25px; align-items:start; }
+  .about-grid > img { width:100%; height:292px; object-fit:cover; object-position:center 52%; border-radius:23px; }
+  .about-copy { padding:1px 10px 0 0; }
+  .about-copy h2 { margin:0 0 13px; }
+  .about-copy p, .about-copy li { color:#777; font-size:12px; line-height:1.45; font-weight:300; }
+  .about-copy ul { margin:3px 0 0 23px; }
+  .campus-title { margin:28px 0 20px; text-align:center; }
+  .campus-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:25px; }
+  .campus-grid figure { position:relative; min-width:0; overflow:hidden; border-radius:7px; }
+  .campus-grid img { display:block; width:100%; height:190px; object-fit:cover; transition:transform .35s; }
+  .campus-grid figcaption { position:absolute; inset:auto 0 0; padding:28px 8px 12px; color:#fff; font-size:12px; text-align:center; opacity:0; background:linear-gradient(transparent,rgba(0,64,128,.9)); transition:opacity .3s; }
+  .campus-grid figure:hover img { transform:scale(1.04); }
+  .campus-grid figure:hover figcaption { opacity:1; }
+  .contact-section { padding:52px 10% 50px; background:#004b8d; color:#fff; }
+  .contact-section .contact-inner { max-width:1200px; margin:auto; }
+  .contact-section h2 { margin:0 0 23px; color:#fff; }
+  .contact-section p, .contact-section li { color:#fff; font-size:13px; line-height:1.65; }
+  .contact-section ul { list-style:none; margin:18px 0; }
+  .contact-section a { color:#d6df00; text-decoration:none; }
+
+  /* Login view kept separate from the authenticated receptionist portal */
+  body:has(#login-screen.active) #content { min-height:100vh; }
+  #login-screen .login-layout { min-height:100vh; }
+  #login-screen .welcome-panel { position:relative; background-color:#087bb6; background-image:linear-gradient(rgba(0,106,169,.05),rgba(0,106,169,.05)),url("ImagesForProject/blue-wallpaper.png"); background-size:cover; background-position:center; }
+  #login-screen .welcome-panel h1 { display:none; }
+  #login-screen .login-side .public-nav { position:absolute; z-index:5; top:0; left:0; right:0; width:100%; height:118px; padding:14px 4.5%; background:#004080; }
+  #login-screen .login-side .public-nav::before { content:""; width:210px; height:78px; margin-right:auto; background:url("ImagesForProject/Ukzn%20Logo.png") left center/contain no-repeat; }
+  #login-screen .login-side .public-links { margin-left:auto; }
+  #login-screen .login-side .public-links a { white-space:nowrap; }
+  #login-screen .welcome-panel::after { content:""; position:absolute; inset:0; background:radial-gradient(ellipse at 25% 40%,transparent 0 30%,rgba(0,53,111,.14) 70%); pointer-events:none; }
+  #login-screen .welcome-panel h1 { position:relative; z-index:1; }
+  #login-screen .field-label span { display:inline-block; width:25px; font-size:0; }
+  #login-screen .field-label span::before { font-family:"Font Awesome 6 Free"; font-size:17px; font-weight:900; }
+  #login-screen .field-label[for="login-email"] span::before { content:"\f0e0"; }
+  #login-screen .field-label[for="login-password"] span::before { content:"\f023"; }
+
+  @media (max-width:900px) {
+    #public-home .public-links a { margin-left:18px; font-size:13px; }
+    .courses-section { width:90%; }
+    .course-card { padding:20px 18px; }
+    .about-grid { grid-template-columns:1fr 1fr; }
+    .campus-grid { gap:14px; }
+    .campus-grid img { height:155px; }
+  }
+  @media (max-width:680px) {
+    #public-home .public-nav { min-height:70px; }
+    #public-home .ukzn-brand img { width:112px; }
+    #public-home .menu-toggle { display:block; margin-left:auto; }
+    #public-home .public-links { display:none; position:absolute; top:69px; left:0; right:0; flex-direction:column; align-items:stretch; gap:0; padding:10px 22px 20px; background:rgba(0,64,128,.96); }
+    #public-home .public-links.open { display:flex; }
+    #public-home .public-links a { margin:0; padding:12px 0; }
+    #public-home .landing-inner { padding-top:50px; }
+    #public-home .landing-inner h1 { font-size:45px; margin-bottom:25px; }
+    #public-home .landing-inner p br, .section-intro br { display:none; }
+    .courses-section { width:88%; padding-top:55px; }
+    .courses-section h2, .about-copy h2, .campus-title, .contact-section h2 { font-size:34px; }
+    .course-grid, .about-grid { grid-template-columns:1fr; }
+    .course-card { min-height:auto; }
+    .about-section { padding:30px 5% 50px; }
+    .about-grid > img { height:260px; }
+    .campus-grid { grid-template-columns:repeat(2,1fr); }
+    .campus-grid figure:last-child { grid-column:1/-1; }
+    .contact-section { padding:45px 7%; }
+  }
   </style>
 </head>
 
@@ -564,8 +661,45 @@
 
 <div id="content">
   <div id="public-home" class="public-screen active">
-    <nav class="public-nav"><a class="ukzn-brand" href="#home" onclick="showSection('public-home');return false"><span class="brand-mark" aria-hidden="true"></span><span class="brand-copy">UNIVERSITY OF<br>KWAZULU-NATAL<small>INYUVESI YAKWAZULU-NATALI</small></span></a><div class="public-links"><a href="#home" onclick="showSection('public-home');return false">HOME</a><a href="#about">ABOUT</a><a href="#courses">COURSES</a><a href="#contact">CONTACT</a><a href="#login" onclick="showSection('login-screen');return false">LOGIN</a></div></nav>
-    <main class="landing-hero" id="home"><div class="landing-inner"><h1>Inspiring Greatness</h1><p>Welcome to the University of KwaZulu-Natal receptionist portal. Connect students and visitors with the people, notices, and access they need.</p><button class="outline-button" onclick="showSection('login-screen')">Login</button></div></main>
+    <section class="landing-hero" id="home">
+      <nav class="public-nav">
+        <a class="ukzn-brand" href="#home" aria-label="UKZN home"><img src="ImagesForProject/Ukzn%20Logo.png" alt="University of KwaZulu-Natal"></a>
+        <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" onclick="togglePublicMenu(this)"><i class="fa-solid fa-bars"></i></button>
+        <div class="public-links"><a href="#home">HOME</a><a href="#about">ABOUT</a><a href="#courses">COURSES</a><a href="#contact">CONTACT</a><a href="#login" onclick="showSection('login-screen');return false">LOGIN</a></div>
+      </nav>
+      <div class="landing-inner">
+        <h1>Inspiring Greatness</h1>
+        <p>The University of KwaZulu-Natal (UKZN) is committed to excellence in teaching, research, and community engagement.<br>With a rich history of fostering innovation and leadership, UKZN empowers students to achieve their full potential and make a meaningful impact in<br>South Africa and beyond. Our diverse and dynamic campus community embodies the spirit of curiosity, collaboration, and social responsibility, preparing<br>graduates to thrive in a rapidly changing world.</p>
+        <button class="outline-button" onclick="showSection('login-screen')">Login</button>
+      </div>
+    </section>
+
+    <section id="courses" class="courses-section">
+      <h2>Courses We Offer</h2>
+      <p class="section-intro">At the University of KwaZulu-Natal, we offer a diverse range of undergraduate and postgraduate programs designed to equip students with the knowledge, skills, and critical thinking needed to excel in their chosen fields. From science and engineering to humanities, business, and health sciences, our courses combine academic rigor with practical experience, preparing graduates to make a meaningful impact in society and the global workforce.</p>
+      <div class="course-grid">
+        <article class="course-card"><h3>Honours Degrees</h3><p>UKZN Honours programs provide students with an opportunity to deepen their knowledge and specialize in a particular field of study. These programs build on undergraduate learning, combining advanced coursework with research components that develop critical thinking, analytical skills, and professional competence. Completing an Honours degree prepares students for either professional practice or further postgraduate study</p></article>
+        <article class="course-card"><h3>Masters Degrees</h3><p>Master's programs at UKZN are designed for advanced study and research in a chosen discipline. They often combine coursework and independent research, allowing students to gain expertise, contribute original insights to their field, and develop the skills necessary for leadership and innovation. A Master's degree equips graduates for high-level professional roles or progression to doctoral studies.</p></article>
+        <article class="course-card"><h3>Doctoral Degrees</h3><p>Doctoral programs at UKZN represent the highest level of academic achievement, focused primarily on independent, original research. PhD candidates contribute new knowledge to their field, demonstrating advanced critical thinking, problem-solving, and scholarly rigor. This qualification prepares graduates for careers in academia, research, and leadership positions across diverse sectors globally.</p></article>
+      </div>
+    </section>
+
+    <section id="about" class="about-section">
+      <div class="about-grid">
+        <img src="ImagesForProject/Westville.jpeg" alt="UKZN Westville campus">
+        <div class="about-copy"><h2>About Us</h2><p>The University of KwaZulu-Natal (UKZN) stands as a beacon of academic excellence and transformation in South Africa. Established on 1 January 2004, UKZN emerged from the merger of two prominent institutions: the University of Natal and the University of Durban-Westville. This strategic consolidation aimed to foster a more inclusive and dynamic higher education landscape in the province of KwaZulu-Natal. The University of Natal, founded in 1910 as the Natal University College in Pietermaritzburg, expanded to Durban in 1931.<br>Today, UKZN operates across five campuses:</p><ul><li>Howard College (Durban)</li><li>Westville</li><li>Pietermaritzburg</li><li>Nelson R. Mandela School of Medicine</li><li>Edgewood</li></ul></div>
+      </div>
+      <h2 class="campus-title">Our Global Campus</h2>
+      <div class="campus-grid">
+        <figure><img src="ImagesForProject/pmb%20resized%202.jpeg" alt="Pietermaritzburg campus"><figcaption>Pietermaritzburg</figcaption></figure>
+        <figure><img src="ImagesForProject/Howard%20resized%202.jpeg" alt="Howard College campus"><figcaption>Howard College</figcaption></figure>
+        <figure><img src="ImagesForProject/WestVille%20resized.jpeg" alt="Westville campus"><figcaption>Westville</figcaption></figure>
+        <figure><img src="ImagesForProject/Nelson%20resized.jpeg" alt="Nelson R. Mandela School of Medicine"><figcaption>Nelson R. Mandela School of Medicine</figcaption></figure>
+        <figure><img src="ImagesForProject/Edgewood.jpg" alt="Edgewood campus"><figcaption>Edgewood</figcaption></figure>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section"><div class="contact-inner"><h2>Contact Us</h2><p>If you have any questions or need more information about the University of KwaZulu-Natal, please reach out to us through the following channels:</p><ul><li><strong>General Enquiries:</strong> education@ukzn.ac.za</li><li><strong>Undergraduate Enquiries:</strong> undergrad@ukzn.ac.za</li><li><strong>Durban / Westville Campus Phone:</strong> +27 31 260 1111</li><li><strong>Pietermaritzburg Campus Phone:</strong> +27 33 260 5111</li><li><strong>General UKZN Contact Number:</strong> +27 31 260 8596</li><li><strong>Website:</strong> <a href="https://www.ukzn.ac.za" target="_blank" rel="noopener">www.ukzn.ac.za</a></li></ul><p>You can also visit our campuses directly at Howard College, Westville, Pietermaritzburg, Edgewood, and the Nelson R. Mandela School of Medicine.</p></div></section>
   </div>
 
   <div id="login-screen" class="screen">
@@ -1281,6 +1415,13 @@ function showSection(id) {
   document.querySelectorAll('.public-screen').forEach(el => {
     el.classList.toggle('active', el.id === id);
   });
+}
+
+function togglePublicMenu(button) {
+  const menu = document.querySelector('#public-home .public-links');
+  if (!menu) return;
+  const open = menu.classList.toggle('open');
+  button.setAttribute('aria-expanded', String(open));
 }
 
 function setStatus(state, label) {
