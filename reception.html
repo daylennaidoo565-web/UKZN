@@ -1029,6 +1029,476 @@
     #login-screen .orbit-core,
     #login-screen .welcome-eyebrow > span { animation:none; }
   }
+
+  /* Smooth public navigation and moving-border buttons */
+  html { scroll-behavior:smooth; }
+  #home, #courses, #about, #contact { scroll-margin-top:18px; }
+  .moving-border-button {
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+    border:0;
+    background:transparent;
+  }
+  .moving-border-button::before {
+    content:"";
+    position:absolute;
+    z-index:-2;
+    width:220%;
+    aspect-ratio:1;
+    top:50%;
+    left:50%;
+    background:conic-gradient(transparent 0 69%,#49e8ff 77%,#fff 82%,#0b73ff 88%,transparent 96%);
+    transform:translate(-50%,-50%);
+    animation:movingButtonBorder 2.6s linear infinite;
+  }
+  .moving-border-button::after {
+    content:"";
+    position:absolute;
+    z-index:-1;
+    inset:2px;
+    border-radius:inherit;
+    transition:background .28s,box-shadow .28s;
+  }
+  .moving-border-button > span,
+  .moving-border-button > i { position:relative; z-index:1; }
+  .moving-border-button .button-label { font-size:inherit; line-height:1; }
+  .moving-border-button .button-arrow { font-size:1.25em; line-height:1; transition:transform .22s; }
+  .moving-border-button:hover .button-arrow { transform:translateX(4px); }
+  #public-home .moving-border-button {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:11px;
+    min-width:162px;
+    height:56px;
+    padding:0 29px;
+    border-radius:12px;
+    color:#fff;
+    box-shadow:0 12px 30px rgba(0,21,49,.22);
+    transition:color .25s,transform .25s,box-shadow .25s;
+  }
+  #public-home .moving-border-button::after { background:rgba(0,42,78,.72); }
+  #public-home .moving-border-button:hover {
+    color:#fff;
+    border:0;
+    box-shadow:0 16px 38px rgba(0,170,223,.28),0 0 24px rgba(80,226,255,.18);
+    transform:translateY(-3px);
+  }
+  #public-home .moving-border-button:hover::after { background:linear-gradient(135deg,#0059a0,#00a5c8); }
+  #login-screen #continue-btn { border-radius:12px; }
+  #login-screen #continue-btn::after { background:linear-gradient(135deg,#003f79,#0084bb); }
+  #login-screen #continue-btn:hover::after { background:linear-gradient(135deg,#004f91,#00a1c7); }
+  #login-screen #continue-btn .button-label { font-size:18px; }
+  #login-screen #continue-btn .button-arrow { font-size:24px; }
+  @keyframes movingButtonBorder {
+    to { transform:translate(-50%,-50%) rotate(360deg); }
+  }
+
+  /* Compact login navigation */
+  #login-screen .login-side { padding-top:126px; }
+  #login-screen .login-side .public-nav { height:94px; padding:9px 4%; }
+  #login-screen .login-side .public-nav::before { width:170px; height:72px; }
+  #login-screen .login-side .public-links { gap:27px; }
+  #login-screen .login-side .public-links a { font-size:15px; }
+
+  /* Modern UKZN staff workspace */
+  body:has(#home-screen.active) {
+    background:#edf3f8;
+    color:#102a43;
+    font-family:"SF Pro Display","SF Pro Text",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  body:has(#home-screen.active) #header {
+    position:sticky;
+    z-index:30;
+    top:0;
+    height:72px;
+    padding:0 28px;
+    border:0;
+    background:#003f75;
+    box-shadow:0 1px 0 rgba(255,255,255,.12),0 8px 24px rgba(0,35,69,.12);
+  }
+  body:has(#home-screen.active) #header .logo {
+    color:#fff;
+    font-size:18px;
+    letter-spacing:-.02em;
+  }
+  body:has(#home-screen.active) #header .logo span { color:#59e2f2; }
+  body:has(#home-screen.active) #header .badge {
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:9px;
+    color:#fff;
+    background:rgba(0,31,61,.38);
+  }
+  body:has(#home-screen.active) #content {
+    min-height:calc(100vh - 72px);
+    overflow:visible;
+    background:#edf3f8;
+  }
+  #home-screen.active { display:block; min-height:calc(100vh - 72px); }
+  #home-screen .dashboard-shell {
+    display:grid;
+    grid-template-columns:292px minmax(0,1fr);
+    min-height:calc(100vh - 72px);
+  }
+  #home-screen .dashboard-rail {
+    position:relative;
+    top:auto;
+    align-self:stretch;
+    min-height:calc(100vh - 72px);
+    padding:20px 20px;
+    overflow:visible;
+    color:#fff;
+    background:
+      radial-gradient(circle at 0 0,rgba(44,209,235,.14),transparent 34%),
+      linear-gradient(180deg,#003967 0%,#00294e 100%);
+    border-right:1px solid rgba(0,42,80,.15);
+  }
+  #home-screen .rail-heading {
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    padding:0 7px 18px;
+    border-bottom:1px solid rgba(255,255,255,.12);
+  }
+  #home-screen .rail-heading span {
+    color:#69e3f2;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+  }
+  #home-screen .rail-heading strong { font-size:23px; letter-spacing:-.035em; }
+  #home-screen .rail-user {
+    display:grid;
+    grid-template-columns:48px 1fr;
+    gap:13px;
+    align-items:center;
+    margin:14px 0 18px;
+    padding:11px 8px;
+    border-left:3px solid #58ddec;
+    background:linear-gradient(90deg,rgba(74,219,237,.1),transparent);
+  }
+  #home-screen .staff-avatar {
+    display:grid;
+    place-items:center;
+    width:46px;
+    height:46px;
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:12px;
+    color:#002e58;
+    background:#62e1ee;
+    font-size:18px;
+  }
+  #home-screen .staff-name { color:#fff; font-size:17px; font-weight:800; line-height:1.25; }
+  #home-screen .staff-role { margin-top:4px; color:rgba(255,255,255,.63); font-size:11px; line-height:1.35; }
+  #home-screen .rail-section-label {
+    margin:0 7px 11px;
+    color:rgba(255,255,255,.48);
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+  }
+  #home-screen .portal-tabs {
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding:0;
+    border:0;
+    background:transparent;
+  }
+  #home-screen .portal-tab {
+    display:grid;
+    grid-template-columns:43px 1fr;
+    gap:12px;
+    align-items:center;
+    width:100%;
+    height:auto;
+    min-height:64px;
+    padding:11px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:14px;
+    color:#fff;
+    text-align:left;
+    background:rgba(255,255,255,.055);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+    transition:transform .2s,border-color .2s,background .2s,box-shadow .2s;
+  }
+  #home-screen .portal-tab:hover {
+    border-color:rgba(94,225,240,.48);
+    background:rgba(79,213,233,.1);
+    transform:translateX(3px);
+  }
+  #home-screen .portal-tab.active {
+    color:#003963;
+    border-color:#fff;
+    background:#fff;
+    box-shadow:0 13px 28px rgba(0,18,40,.2);
+  }
+  #home-screen .nav-tile-icon {
+    display:grid;
+    place-items:center;
+    width:43px;
+    height:43px;
+    border-radius:11px;
+    color:#75e8f4;
+    background:rgba(0,25,51,.32);
+    font-size:16px;
+  }
+  #home-screen .portal-tab.active .nav-tile-icon { color:#fff; background:linear-gradient(135deg,#00549a,#00a2c3); }
+  #home-screen .nav-tile-copy { display:block; min-width:0; }
+  #home-screen .nav-tile-copy strong { display:block; font-size:14px; line-height:1.25; }
+  #home-screen .nav-tile-copy small { display:block; margin-top:4px; color:rgba(255,255,255,.52); font-size:10px; font-weight:500; line-height:1.25; }
+  #home-screen .portal-tab.active .nav-tile-copy small { color:#6d7f90; }
+  #home-screen .status-panel {
+    margin-top:18px;
+    overflow:visible;
+    border:1px solid rgba(255,255,255,.13);
+    border-radius:14px;
+    background:rgba(0,24,48,.3);
+    box-shadow:none;
+  }
+  #home-screen .status-panel .panel-head {
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:13px 14px;
+    border-color:rgba(255,255,255,.1);
+    color:#fff;
+    font-size:13px;
+  }
+  #home-screen .status-panel .panel-head i { color:#60e0ee; }
+  #home-screen .status-panel .panel-body { gap:9px; padding:13px; }
+  #home-screen .status-label { color:rgba(255,255,255,.62); font-size:11px; font-weight:650; }
+  #home-screen .status-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:7px; }
+  #home-screen .status-row select {
+    min-width:0;
+    height:42px;
+    padding:0 9px;
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:9px;
+    color:#fff;
+    background:#00335f;
+    font-size:11px;
+  }
+  #home-screen .small-btn {
+    height:42px;
+    padding:0 12px;
+    border-radius:9px;
+    color:#003052;
+    background:#66e3ef;
+    font-size:11px;
+  }
+  #home-screen .status-panel .hint { color:rgba(255,255,255,.5); font-size:10px; }
+
+  #home-screen .dashboard-main {
+    width:100%;
+    max-width:1480px;
+    margin:0 auto;
+    padding:48px clamp(28px,4vw,64px) 64px;
+  }
+  #home-screen .dashboard-intro {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:30px;
+    margin-bottom:30px;
+  }
+  #home-screen .dashboard-eyebrow {
+    margin-bottom:10px;
+    color:#007fa6;
+    font-size:11px;
+    font-weight:850;
+    letter-spacing:.17em;
+    text-transform:uppercase;
+  }
+  #home-screen .dashboard-intro h1 {
+    margin:0;
+    color:#073b68;
+    font-size:clamp(38px,4vw,56px);
+    font-weight:900;
+    line-height:1;
+    letter-spacing:-.055em;
+  }
+  #home-screen .dashboard-intro p {
+    margin-top:13px;
+    color:#697d90;
+    font-size:15px;
+    line-height:1.55;
+  }
+  #home-screen .dashboard-mark {
+    display:grid;
+    place-items:center;
+    flex:0 0 auto;
+    width:72px;
+    height:72px;
+    border:1px solid rgba(0,91,146,.13);
+    border-radius:18px;
+    color:#007fa6;
+    background:linear-gradient(145deg,#fff,#e7f4f7);
+    box-shadow:0 16px 35px rgba(13,69,112,.1);
+    font-size:26px;
+  }
+  #home-screen .workspace-panel {
+    overflow:hidden;
+    border:1px solid #dce6ef;
+    border-radius:22px;
+    background:#fff;
+    box-shadow:0 22px 60px rgba(31,72,106,.1);
+  }
+  #home-screen .portal-panel > .panel-head {
+    padding:21px 30px;
+    border-bottom:1px solid #e4ebf1;
+    color:#153b5e;
+    background:#f8fbfd;
+    font-size:14px;
+    font-weight:800;
+    letter-spacing:.01em;
+  }
+  #home-screen .workspace-panel .panel-body { gap:18px; padding:31px; }
+  #home-screen .notice-form { grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:20px; }
+  #home-screen .field-group {
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+    min-width:0;
+    color:#173d5e;
+    font-size:12px;
+    font-weight:750;
+  }
+  #home-screen .field-group.wide { grid-column:1/-1; }
+  #home-screen .field-group input,
+  #home-screen .field-group select,
+  #home-screen .field-group textarea,
+  #home-screen .access-layout > input {
+    width:100%;
+    border:1.5px solid #d7e1ea;
+    border-radius:11px;
+    color:#18354f;
+    background:#fbfcfe;
+    font-family:inherit;
+    font-size:14px;
+    transition:border-color .2s,box-shadow .2s,background .2s;
+  }
+  #home-screen .field-group input,
+  #home-screen .field-group select { height:50px; padding:0 14px; }
+  #home-screen .field-group textarea { min-height:190px; padding:15px; line-height:1.55; }
+  #home-screen .field-group input:focus,
+  #home-screen .field-group select:focus,
+  #home-screen .field-group textarea:focus {
+    border-color:#0098b6;
+    background:#fff;
+    box-shadow:0 0 0 4px rgba(0,152,182,.1);
+  }
+  #home-screen .primary {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:auto;
+    min-width:190px;
+    height:50px;
+    margin:0;
+    padding:0 22px;
+    border-radius:11px;
+    color:#fff;
+    background:linear-gradient(135deg,#004a88,#008eaf);
+    box-shadow:0 10px 24px rgba(0,89,137,.16);
+    transition:transform .2s,box-shadow .2s,filter .2s;
+  }
+  #home-screen .primary:hover {
+    filter:saturate(1.12);
+    box-shadow:0 14px 28px rgba(0,89,137,.24);
+    transform:translateY(-2px);
+  }
+  #home-screen .primary.green { background:linear-gradient(135deg,#087b72,#16a17c); }
+  #home-screen .dashboard-action { justify-self:end; }
+  #home-screen .post-result { color:#087c68; font-size:13px; }
+  #home-screen .workspace-panel .hint { color:#758698; font-size:13px; line-height:1.55; }
+  #home-screen .my-notices-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+  #home-screen .notice-card {
+    padding:18px;
+    border:1px solid #dce6ee;
+    border-radius:14px;
+    color:#153b5e;
+    background:#f9fbfd;
+  }
+  #home-screen .notice-card-title { font-size:15px; }
+  #home-screen .notice-card-meta { color:#748597; }
+  #home-screen .notice-card-desc { color:#3c566d; line-height:1.55; }
+  #home-screen .delete-notice-btn {
+    border-radius:9px;
+    background:#c9413a;
+    transition:background .2s,transform .2s;
+  }
+  #home-screen .delete-notice-btn:hover { background:#ac2f2a; transform:translateY(-1px); }
+  #home-screen .access-layout { gap:20px; }
+  #home-screen .remote-access-block {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    padding:20px;
+    border-left:4px solid #13a17c;
+    background:#f1faf7;
+  }
+  #home-screen .remote-access-block strong { color:#174f45; font-size:15px; }
+  #home-screen .remote-access-block p { margin-top:6px; color:#648079; font-size:12px; line-height:1.45; }
+  #home-screen .divider { background:#e2e9ef; }
+  #home-screen .access-form-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+
+  body:has(#state-incoming.active) {
+    background:radial-gradient(circle at 50% 25%,#07558d,#002d56 65%,#001d39);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  body:has(#state-incoming.active) #content { color:#fff; }
+  body:has(#state-incoming.active) .ring-circle { background:linear-gradient(135deg,#0095b5,#004f90); }
+
+  @media (max-width:1050px) {
+    #home-screen .dashboard-shell { grid-template-columns:255px minmax(0,1fr); }
+    #home-screen .dashboard-rail { padding-left:15px; padding-right:15px; }
+    #home-screen .dashboard-main { padding:40px 30px 54px; }
+    #home-screen .access-form-grid { grid-template-columns:1fr 1fr; }
+    #home-screen .access-form-grid .field-group:last-child { grid-column:1/-1; }
+  }
+  @media (max-width:820px) {
+    #login-screen .login-side .public-nav { height:82px; }
+    #login-screen .login-side .public-nav::before { width:148px; height:64px; }
+    #login-screen .login-side { padding-top:105px; }
+    #home-screen .dashboard-shell { display:block; }
+    #home-screen .dashboard-rail { position:static; width:100%; height:auto; min-height:0; padding:24px 20px; overflow:visible; }
+    #home-screen .rail-heading { padding-bottom:18px; }
+    #home-screen .rail-user { margin:17px 0 22px; }
+    #home-screen .portal-tabs { display:grid; grid-template-columns:repeat(3,1fr); }
+    #home-screen .portal-tab { grid-template-columns:40px 1fr; min-height:68px; }
+    #home-screen .status-panel { margin-top:20px; }
+    #home-screen .dashboard-main { padding-top:34px; }
+    #home-screen .my-notices-list { grid-template-columns:1fr; }
+  }
+  @media (max-width:640px) {
+    body:has(#home-screen.active) #header { height:64px; padding:0 17px; }
+    body:has(#home-screen.active) #header .logo { font-size:16px; }
+    #home-screen .portal-tabs { grid-template-columns:1fr; }
+    #home-screen .portal-tab:hover { transform:none; }
+    #home-screen .dashboard-main { padding:30px 18px 44px; }
+    #home-screen .dashboard-intro { align-items:flex-start; }
+    #home-screen .dashboard-intro h1 { font-size:38px; }
+    #home-screen .dashboard-mark { width:55px; height:55px; border-radius:14px; font-size:20px; }
+    #home-screen .workspace-panel .panel-body { padding:22px 18px; }
+    #home-screen .portal-panel > .panel-head { padding:18px; }
+    #home-screen .notice-form,
+    #home-screen .access-form-grid { grid-template-columns:1fr; }
+    #home-screen .access-form-grid .field-group:last-child { grid-column:auto; }
+    #home-screen .dashboard-action,
+    #home-screen .primary { width:100%; justify-self:stretch; }
+    #home-screen .remote-access-block { align-items:stretch; flex-direction:column; }
+  }
+
+  @media (prefers-reduced-motion:reduce) {
+    html { scroll-behavior:auto; }
+    .moving-border-button::before { animation:none; }
+  }
   </style>
 </head>
 
@@ -1047,12 +1517,12 @@
       <nav class="public-nav">
         <a class="ukzn-brand" href="#home" aria-label="UKZN home"><img src="data:image/png;base64,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" alt="University of KwaZulu-Natal"></a>
         <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" onclick="togglePublicMenu(this)"><i class="fa-solid fa-bars"></i></button>
-        <div class="public-links"><a href="#home">HOME</a><a href="#about">ABOUT</a><a href="#courses">COURSES</a><a href="#contact">CONTACT</a><a href="#login" onclick="showSection('login-screen');return false">LOGIN</a></div>
+        <div class="public-links"><a href="#home" onclick="return scrollToPublicSection(event,'home')">HOME</a><a href="#about" onclick="return scrollToPublicSection(event,'about')">ABOUT</a><a href="#courses" onclick="return scrollToPublicSection(event,'courses')">COURSES</a><a href="#contact" onclick="return scrollToPublicSection(event,'contact')">CONTACT</a><a href="#login" onclick="showSection('login-screen');return false">LOGIN</a></div>
       </nav>
       <div class="landing-inner">
         <h1>Inspiring Greatness</h1>
         <p>The University of KwaZulu-Natal (UKZN) is committed to excellence in teaching, research, and community engagement.<br>With a rich history of fostering innovation and leadership, UKZN empowers students to achieve their full potential and make a meaningful impact in<br>South Africa and beyond. Our diverse and dynamic campus community embodies the spirit of curiosity, collaboration, and social responsibility, preparing<br>graduates to thrive in a rapidly changing world.</p>
-        <button class="outline-button" onclick="showSection('login-screen')">Login</button>
+        <button class="outline-button moving-border-button" onclick="showSection('login-screen')"><span class="button-label">Login</span><span class="button-arrow" aria-hidden="true">→</span></button>
       </div>
     </section>
 
@@ -1091,12 +1561,11 @@
           <div class="welcome-eyebrow"><span></span> UKZN HOWARD COLLEGE</div>
           <h1>Connect.<br>Welcome.<br><em>Assist.</em></h1>
           <p>A smarter front desk for the people who keep campus moving. Receive visitors, answer calls, and open the right doors—all from one place.</p>
-          <div class="welcome-status"><span><i></i> Live reception</span><span><i></i> Secure access</span></div>
         </div>
         <div class="portal-orbit" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="orbit orbit-three"></span><span class="orbit-core"></span></div>
       </div>
       <div class="login-side">
-        <nav class="public-nav"><div class="public-links"><a href="#home" onclick="showSection('public-home');return false">HOME</a><a href="#about">ABOUT</a><a href="#courses">COURSES</a><a href="#contact">CONTACT</a><a href="#login">LOGIN</a></div></nav>
+        <nav class="public-nav"><div class="public-links"><a href="#home" onclick="return scrollToPublicSection(event,'home')">HOME</a><a href="#about" onclick="return scrollToPublicSection(event,'about')">ABOUT</a><a href="#courses" onclick="return scrollToPublicSection(event,'courses')">COURSES</a><a href="#contact" onclick="return scrollToPublicSection(event,'contact')">CONTACT</a><a href="#login" onclick="return scrollToPublicSection(event,'login')">LOGIN</a></div></nav>
         <div class="login-box">
           <div class="title">LOGIN</div>
           <p class="login-kicker">Welcome back. Sign in to your staff portal.</p>
@@ -1104,7 +1573,7 @@
           <input id="login-email" type="email" placeholder="name@ukzn.ac.za" autocomplete="username">
           <label class="field-label" for="login-password"><span aria-hidden="true">▣</span> Password</label>
           <input id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password">
-          <button class="primary" id="continue-btn" onclick="login()">Login <span aria-hidden="true">→</span></button>
+          <button class="primary moving-border-button" id="continue-btn" onclick="login()"><span class="button-label">Login</span><span class="button-arrow" aria-hidden="true">→</span></button>
           <div class="hint" id="login-hint" style="margin-top:16px"></div>
         </div>
       </div>
@@ -1112,78 +1581,113 @@
   </div>
 
   <div id="home-screen" class="screen">
-    <div class="portal-main">
-      <section class="panel">
-        <div class="panel-head">My Status</div>
-        <div class="panel-body">
+    <div class="dashboard-shell">
+      <aside class="dashboard-rail" aria-label="Staff workspace navigation">
+        <div class="rail-heading">
+          <span>Howard College</span>
+          <strong>Reception Desk</strong>
+        </div>
+
+        <div class="rail-user">
+          <div class="staff-avatar" aria-hidden="true"><i class="fa-solid fa-user-tie"></i></div>
           <div>
             <div class="staff-name" id="staff-name">Staff</div>
             <div class="staff-role" id="staff-role">Online for kiosk calls</div>
           </div>
-
-          <div class="status-row">
-            <select id="status-select">
-              <option>Available</option>
-              <option>Available in Office</option>
-              <option>Busy</option>
-              <option>In a Meeting</option>
-              <option>Out of Office</option>
-            </select>
-            <button class="small-btn" onclick="saveStatus()">Save</button>
-          </div>
-
-          <div class="hint">Your status appears on the kiosk notices page and helps students know whether you are available.</div>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="portal-tabs">
-          <button class="portal-tab active" id="notice-tab-btn" onclick="showPortalTab('notice')">Post Notice</button>
-          <button class="portal-tab" id="my-notices-tab-btn" onclick="showPortalTab('my-notices')">My Notices</button>
-          <button class="portal-tab" id="access-tab-btn" onclick="showPortalTab('access')">Access Codes</button>
         </div>
 
-        <div class="portal-panel active" id="notice-panel">
-          <div class="panel-head">Post Notice</div>
+        <div class="rail-section-label">Workspace</div>
+        <div class="portal-tabs" role="tablist" aria-label="Reception tools">
+          <button class="portal-tab active" id="notice-tab-btn" role="tab" aria-controls="notice-panel" aria-selected="true" onclick="showPortalTab('notice')">
+            <span class="nav-tile-icon" aria-hidden="true"><i class="fa-solid fa-pen-to-square"></i></span>
+            <span class="nav-tile-copy"><strong>Post Notice</strong><small>Create a campus update</small></span>
+          </button>
+          <button class="portal-tab" id="my-notices-tab-btn" role="tab" aria-controls="my-notices-panel" aria-selected="false" onclick="showPortalTab('my-notices')">
+            <span class="nav-tile-icon" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+            <span class="nav-tile-copy"><strong>My Notices</strong><small>Review published items</small></span>
+          </button>
+          <button class="portal-tab" id="access-tab-btn" role="tab" aria-controls="access-panel" aria-selected="false" onclick="showPortalTab('access')">
+            <span class="nav-tile-icon" aria-hidden="true"><i class="fa-solid fa-key"></i></span>
+            <span class="nav-tile-copy"><strong>Access Control</strong><small>Manage visitor entry</small></span>
+          </button>
+        </div>
+
+        <section class="panel status-panel">
+          <div class="panel-head"><i class="fa-solid fa-signal" aria-hidden="true"></i> Availability</div>
           <div class="panel-body">
-            <div class="notice-form">
-              <select id="module-select">
-                <option value="university">University Notice</option>
+            <label class="status-label" for="status-select">Current staff status</label>
+            <div class="status-row">
+              <select id="status-select">
+                <option>Available</option>
+                <option>Available in Office</option>
+                <option>Busy</option>
+                <option>In a Meeting</option>
+                <option>Out of Office</option>
               </select>
-              <input id="notice-title" placeholder="Notice title">
-              <textarea id="notice-description" class="wide" placeholder="Type the notice students should see..."></textarea>
-              <button class="primary wide" onclick="postNotice()">Post Notice</button>
+              <button class="small-btn" onclick="saveStatus()">Save</button>
             </div>
-            <div class="post-result" id="post-result"></div>
+            <div class="hint">This status is shown to students at the kiosk.</div>
           </div>
-        </div>
+        </section>
+      </aside>
 
-        <div class="portal-panel" id="my-notices-panel">
-          <div class="panel-head">My Notices</div>
-          <div class="panel-body">
-            <div class="hint">View and delete notices you have posted.</div>
-            <div id="my-notices-list" class="my-notices-list"></div>
-            <div class="post-result" id="my-notices-result"></div>
+      <main class="dashboard-main">
+        <header class="dashboard-intro">
+          <div>
+            <div class="dashboard-eyebrow">Reception operations</div>
+            <h1 id="dashboard-title">Post Notice</h1>
+            <p id="dashboard-description">Publish a clear update for students and visitors.</p>
           </div>
-        </div>
+          <div class="dashboard-mark" aria-hidden="true"><i class="fa-solid fa-building-columns"></i></div>
+        </header>
 
-        <div class="portal-panel" id="access-panel">
-          <div class="panel-head">Visitor Access Control</div>
-          <div class="panel-body">
-            <button class="primary green" onclick="grantRemoteAccess()">Grant Access Remotely</button>
-            <div class="hint">Use this when a visitor is at the kiosk and you want to open the door manually.</div>
-
-            <div class="divider"></div>
-
-            <input id="access-visitor-name" placeholder="Visitor full name">
-            <input id="access-visitor-email" type="email" placeholder="Visitor email address">
-            <input id="access-expires-at" type="datetime-local">
-            <button class="primary" onclick="generateAccessCode()">Generate & Email Code</button>
-            <div class="post-result" id="access-result"></div>
-            <div class="hint">Generated codes are valid until the selected date and time, and can only be used once.</div>
+        <section class="panel workspace-panel">
+          <div class="portal-panel active" id="notice-panel" role="tabpanel" aria-labelledby="notice-tab-btn">
+            <div class="panel-head">Notice details</div>
+            <div class="panel-body">
+              <div class="notice-form">
+                <label class="field-group"><span>Audience or module</span><select id="module-select"><option value="university">University Notice</option></select></label>
+                <label class="field-group"><span>Notice title</span><input id="notice-title" placeholder="Add a clear, concise title"></label>
+                <label class="field-group wide"><span>Message</span><textarea id="notice-description" placeholder="Type the notice students should see..."></textarea></label>
+                <button class="primary wide dashboard-action" onclick="postNotice()"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Post Notice</button>
+              </div>
+              <div class="post-result" id="post-result"></div>
+            </div>
           </div>
-        </div>
-      </section>
+
+          <div class="portal-panel" id="my-notices-panel" role="tabpanel" aria-labelledby="my-notices-tab-btn">
+            <div class="panel-head">Published notices</div>
+            <div class="panel-body">
+              <div class="hint">Review or remove notices you have already posted.</div>
+              <div id="my-notices-list" class="my-notices-list"></div>
+              <div class="post-result" id="my-notices-result"></div>
+            </div>
+          </div>
+
+          <div class="portal-panel" id="access-panel" role="tabpanel" aria-labelledby="access-tab-btn">
+            <div class="panel-head">Visitor access control</div>
+            <div class="panel-body access-layout">
+              <div class="remote-access-block">
+                <div>
+                  <strong>Visitor waiting at the kiosk?</strong>
+                  <p>Open the door immediately after confirming their identity.</p>
+                </div>
+                <button class="primary green" onclick="grantRemoteAccess()"><i class="fa-solid fa-door-open" aria-hidden="true"></i> Grant Access Remotely</button>
+              </div>
+
+              <div class="divider"></div>
+              <div class="access-form-grid">
+                <label class="field-group"><span>Visitor full name</span><input id="access-visitor-name" placeholder="Full name"></label>
+                <label class="field-group"><span>Visitor email</span><input id="access-visitor-email" type="email" placeholder="name@example.com"></label>
+                <label class="field-group"><span>Access expires</span><input id="access-expires-at" type="datetime-local"></label>
+              </div>
+              <button class="primary dashboard-action" onclick="generateAccessCode()"><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i> Generate &amp; Email Code</button>
+              <div class="post-result" id="access-result"></div>
+              <div class="hint">Codes remain valid until the selected time and can only be used once.</div>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   </div>
 
@@ -1415,6 +1919,21 @@ function showPortalTab(name) {
   document.querySelectorAll('.portal-tab').forEach(btn => btn.classList.remove('active'));
   document.querySelectorAll('.portal-panel').forEach(panel => panel.classList.remove('active'));
 
+  const tabCopy = {
+    notice: {
+      title: 'Post Notice',
+      description: 'Publish a clear update for students and visitors.'
+    },
+    'my-notices': {
+      title: 'My Notices',
+      description: 'Review and manage the updates you have published.'
+    },
+    access: {
+      title: 'Access Control',
+      description: 'Handle visitor entry and issue time-limited access codes.'
+    }
+  };
+
   if (name === 'notice') {
     document.getElementById('notice-tab-btn').classList.add('active');
     document.getElementById('notice-panel').classList.add('active');
@@ -1429,6 +1948,16 @@ function showPortalTab(name) {
   if (name === 'access') {
     document.getElementById('access-tab-btn').classList.add('active');
     document.getElementById('access-panel').classList.add('active');
+  }
+
+  document.querySelectorAll('.portal-tab').forEach(btn => {
+    btn.setAttribute('aria-selected', String(btn.classList.contains('active')));
+  });
+
+  const copy = tabCopy[name];
+  if (copy) {
+    document.getElementById('dashboard-title').textContent = copy.title;
+    document.getElementById('dashboard-description').textContent = copy.description;
   }
 }
 
@@ -1820,6 +2349,40 @@ function showSection(id) {
   document.querySelectorAll('.public-screen').forEach(el => {
     el.classList.toggle('active', el.id === id);
   });
+
+  if (id === 'login-screen' || id === 'home-screen') {
+    requestAnimationFrame(() => window.scrollTo({ top:0, behavior:'auto' }));
+  }
+}
+
+function scrollToPublicSection(event, id) {
+  if (event) event.preventDefault();
+
+  if (id === 'login') {
+    showSection('login-screen');
+    return false;
+  }
+
+  const scrollToTarget = () => {
+    const target = document.getElementById(id);
+    if (!target) return;
+    target.scrollIntoView({ behavior:'smooth', block:'start' });
+    try { history.replaceState(null, '', `#${id}`); } catch (_) {}
+
+    const menu = document.querySelector('#public-home .public-links');
+    const menuButton = document.querySelector('#public-home .menu-toggle');
+    if (menu) menu.classList.remove('open');
+    if (menuButton) menuButton.setAttribute('aria-expanded', 'false');
+  };
+
+  if (!document.getElementById('public-home').classList.contains('active')) {
+    showSection('public-home');
+    requestAnimationFrame(() => requestAnimationFrame(scrollToTarget));
+  } else {
+    scrollToTarget();
+  }
+
+  return false;
 }
 
 function togglePublicMenu(button) {
