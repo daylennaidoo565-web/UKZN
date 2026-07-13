@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Howard - Staff Portal</title>
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    :root{
+      --bg:#0d1117;
+      --surface:#1a2744;
+      --surface2:#243058;
+      --blue:#2d5be3;
+      --green:#10b981;
+      --red:#ef4444;
+      --white:#e8eaf6;
+      --muted:#7986cb;
+      --border:rgba(255,255,255,.12);
+    }
+
+    body{
+      background:var(--bg);
+      color:var(--white);
+      font-family:'Segoe UI',Arial,sans-serif;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      overflow-y:auto;
+      overflow-x:hidden;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    #header{
+      background:var(--surface);
+      padding:12px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--surface2);
+      flex-shrink:0;
+    }
+
+    .logo{font-size:18px;font-weight:800}
+    .logo span{color:var(--blue)}
+
+    .badge{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      background:var(--surface2);
+      border-radius:20px;
+      padding:5px 12px;
+    }
+
+    .dot{width:8px;height:8px;border-radius:50%;background:#6b7280}
+    .dot.connected{background:var(--green);box-shadow:0 0 6px var(--green)}
+    .dot.connecting{background:#f59e0b;animation:blink 1s infinite}
+    .dot.error{background:var(--red)}
+
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+    .badge span{font-size:12px;font-weight:600}
+
+    #content{
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+
+    .screen{display:none;flex:1;min-height:0}
+    .screen.active{display:flex}
+
+    #login-screen{
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .login-box{
+      width:min(420px,100%);
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:22px;
+      box-shadow:0 18px 50px rgba(0,0,0,.28);
+    }
+
+    .title{font-size:24px;font-weight:800;margin-bottom:6px}
+    .sub{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.45}
+
+    select,input,textarea{
+      width:100%;
+      background:#111827;
+      border:1.5px solid var(--surface2);
+      border-radius:10px;
+      color:var(--white);
+      font-size:14px;
+      outline:none;
+    }
+
+    select,input{height:44px;padding:0 12px}
+    input + input{margin-top:10px}
+
+    textarea{
+      min-height:112px;
+      resize:vertical;
+      padding:12px;
+      font-family:inherit;
+    }
+
+    select:focus,input:focus,textarea:focus{border-color:var(--blue)}
+
+    .primary{
+      width:100%;
+      height:44px;
+      border:none;
+      border-radius:10px;
+      background:var(--blue);
+      color:white;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      margin-top:12px;
+    }
+
+    .primary:disabled{opacity:.55;cursor:not-allowed}
+    .primary.green{background:var(--green)}
+    .primary.red{background:var(--red)}
+
+    #home-screen{
+      flex-direction:column;
+      overflow:visible;
+    }
+
+    .portal-main{
+      flex:1;
+      min-height:0;
+      display:grid;
+      grid-template-columns:320px 1fr;
+      gap:14px;
+      padding:14px;
+      overflow-y:auto;
+      overflow-x:hidden;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .panel{
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:14px;
+      overflow:hidden;
+      min-height:0;
+    }
+
+    .panel-head{
+      padding:13px 14px;
+      border-bottom:1px solid var(--border);
+      font-weight:800;
+      font-size:14px;
+    }
+
+    .panel-body{
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .staff-name{font-size:20px;font-weight:900}
+    .staff-role{font-size:13px;color:var(--muted);margin-top:2px}
+
+    .status-row{display:flex;gap:8px}
+    .status-row select{flex:1}
+
+    .small-btn{
+      height:44px;
+      border:none;
+      border-radius:10px;
+      background:var(--green);
+      color:white;
+      padding:0 14px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    .portal-tabs{
+      display:flex;
+      gap:8px;
+      padding:12px;
+      background:#111827;
+      border-bottom:1px solid var(--border);
+      flex-wrap:wrap;
+    }
+
+    .portal-tab{
+      height:38px;
+      border:none;
+      border-radius:10px;
+      padding:0 13px;
+      background:var(--surface2);
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .portal-tab.active{
+      background:var(--blue);
+      color:white;
+    }
+
+    .portal-panel{display:none}
+    .portal-panel.active{display:block}
+
+    .notice-form{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .notice-form .wide{grid-column:1/-1}
+
+    .post-result{
+      font-size:13px;
+      color:var(--green);
+      min-height:18px;
+      line-height:1.35;
+    }
+
+    .divider{
+      height:1px;
+      background:var(--border);
+      margin:4px 0;
+    }
+
+    .my-notices-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .notice-card{
+      background:#111827;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+    }
+
+    .notice-card-title{
+      font-size:14px;
+      font-weight:900;
+      margin-bottom:4px;
+    }
+
+    .notice-card-meta{
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:8px;
+      line-height:1.35;
+    }
+
+    .notice-card-desc{
+      font-size:13px;
+      line-height:1.4;
+      color:var(--white);
+      margin-bottom:10px;
+      white-space:pre-wrap;
+    }
+
+    .delete-notice-btn{
+      width:100%;
+      height:38px;
+      border:none;
+      border-radius:9px;
+      background:var(--red);
+      color:white;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    #state-incoming{
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      text-align:center;
+      padding:18px;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .ring-circle{
+      width:100px;
+      height:100px;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--surface),var(--blue));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      animation:ringPulse 1.5s ease-in-out infinite;
+    }
+
+    .ring-circle svg{width:48px;height:48px;fill:white}
+
+    @keyframes ringPulse{
+      0%,100%{box-shadow:0 0 0 0 rgba(45,91,227,.5)}
+      50%{box-shadow:0 0 0 24px rgba(45,91,227,0)}
+    }
+
+    .incoming-title{font-size:24px;font-weight:900}
+    .incoming-from{font-size:14px;color:var(--muted)}
+
+    .incoming-btns{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+
+    .btn-accept,.btn-reject{
+      color:white;
+      border:none;
+      padding:14px 36px;
+      border-radius:50px;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .btn-accept{background:var(--green)}
+    .btn-reject{background:var(--red)}
+
+    #state-in-call{
+      width:100%;
+      height:100%;
+      min-height:0;
+      flex-direction:column;
+      overflow:hidden;
+    }
+
+    .call-active #header{display:none}
+
+    #video-grid{
+      flex:1;
+      min-height:0;
+      display:grid;
+      grid-template-columns:1fr;
+      position:relative;
+      background:#000;
+      overflow:hidden;
+    }
+
+    #remote-video{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      object-position:center center;
+      display:block;
+      background:#000;
+    }
+
+    #local-video{
+      position:absolute;
+      top:12px;
+      right:12px;
+      width:120px;
+      height:90px;
+      border-radius:10px;
+      object-fit:contain;
+      object-position:center center;
+      border:2px solid rgba(255,255,255,.3);
+      background:#111;
+    }
+
+    .video-label{
+      position:absolute;
+      bottom:12px;
+      left:12px;
+      background:rgba(0,0,0,.6);
+      padding:4px 10px;
+      border-radius:6px;
+      font-size:12px;
+    }
+
+    #call-bar{
+      background:var(--surface);
+      padding:10px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-shrink:0;
+    }
+
+    .call-peer{font-size:14px;font-weight:800}
+    .call-timer{font-size:13px;color:var(--green);font-weight:800}
+
+    #call-controls{
+      background:var(--bg);
+      padding:10px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      flex-shrink:0;
+      min-height:78px;
+    }
+
+    .ctrl{
+      width:52px;
+      height:52px;
+      border-radius:50%;
+      border:none;
+      background:rgba(255,255,255,.1);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .ctrl svg{width:22px;height:22px;fill:white}
+    .ctrl.muted{background:rgba(239,68,68,.3)}
+
+    .ctrl.hangup{
+      width:64px;
+      height:64px;
+      background:var(--red);
+      box-shadow:0 0 20px rgba(239,68,68,.4);
+    }
+
+    @media(max-width:760px){
+      .portal-main{
+        grid-template-columns:1fr;
+        align-content:start;
+        overflow-y:auto;
+      }
+
+      .notice-form{
+        grid-template-columns:1fr;
+      }
+
+      #state-incoming{
+        justify-content:flex-start;
+        padding-top:20px;
+      }
+
+      .ring-circle{
+        width:78px;
+        height:78px;
+      }
+
+      .ring-circle svg{
+        width:36px;
+        height:36px;
+      }
+
+      .incoming-title{
+        font-size:21px;
+      }
+
+      .incoming-btns{
+        width:100%;
+        flex-direction:column;
+        gap:10px;
+      }
+
+      .btn-accept,
+      .btn-reject{
+        width:100%;
+        border-radius:14px;
+      }
+
+      .call-active #content{
+        height:100dvh;
+        min-height:0;
+        overflow:hidden;
+      }
+
+      .call-active #state-in-call{
+        height:100dvh;
+        min-height:0;
+      }
+
+      .call-active #video-grid{
+        flex:1;
+        min-height:0;
+        max-height:calc(100dvh - 128px);
+      }
+
+      .call-active #call-bar{
+        min-height:42px;
+        padding:8px 12px;
+      }
+
+      .call-active #call-controls{
+        min-height:76px;
+        padding:8px 12px;
+        gap:16px;
+      }
+
+      .call-active .ctrl{
+        width:46px;
+        height:46px;
+      }
+
+      .call-active .ctrl.hangup{
+        width:56px;
+        height:56px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div id="header">
+  <div class="logo">UK<span>ZN</span> Howard</div>
+  <div class="badge">
+    <div class="dot connecting" id="dot"></div>
+    <span id="status-label">Connecting...</span>
+  </div>
+</div>
+
+<div id="content">
+  <div id="login-screen" class="screen active">
+    <div class="login-box">
+      <div class="title">Staff Login</div>
+      <div class="sub">Login to receive kiosk calls, post notices, and manage visitor access.</div>
+
+      <input id="login-email" type="email" placeholder="Email address" autocomplete="username">
+      <input id="login-password" type="password" placeholder="Password" autocomplete="current-password">
+
+      <button class="primary" id="continue-btn" onclick="login()">Login</button>
+      <div class="hint" id="login-hint" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <div id="home-screen" class="screen">
+    <div class="portal-main">
+      <section class="panel">
+        <div class="panel-head">My Status</div>
+        <div class="panel-body">
+          <div>
+            <div class="staff-name" id="staff-name">Staff</div>
+            <div class="staff-role" id="staff-role">Online for kiosk calls</div>
+          </div>
+
+          <div class="status-row">
+            <select id="status-select">
+              <option>Available</option>
+              <option>Available in Office</option>
+              <option>Busy</option>
+              <option>In a Meeting</option>
+              <option>Out of Office</option>
+            </select>
+            <button class="small-btn" onclick="saveStatus()">Save</button>
+          </div>
+
+          <div class="hint">Your status appears on the kiosk notices page and helps students know whether you are available.</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="portal-tabs">
+          <button class="portal-tab active" id="notice-tab-btn" onclick="showPortalTab('notice')">Post Notice</button>
+          <button class="portal-tab" id="my-notices-tab-btn" onclick="showPortalTab('my-notices')">My Notices</button>
+          <button class="portal-tab" id="access-tab-btn" onclick="showPortalTab('access')">Access Codes</button>
+        </div>
+
+        <div class="portal-panel active" id="notice-panel">
+          <div class="panel-head">Post Notice</div>
+          <div class="panel-body">
+            <div class="notice-form">
+              <select id="module-select">
+                <option value="university">University Notice</option>
+              </select>
+              <input id="notice-title" placeholder="Notice title">
+              <textarea id="notice-description" class="wide" placeholder="Type the notice students should see..."></textarea>
+              <button class="primary wide" onclick="postNotice()">Post Notice</button>
+            </div>
+            <div class="post-result" id="post-result"></div>
+          </div>
+        </div>
+
+        <div class="portal-panel" id="my-notices-panel">
+          <div class="panel-head">My Notices</div>
+          <div class="panel-body">
+            <div class="hint">View and delete notices you have posted.</div>
+            <div id="my-notices-list" class="my-notices-list"></div>
+            <div class="post-result" id="my-notices-result"></div>
+          </div>
+        </div>
+
+        <div class="portal-panel" id="access-panel">
+          <div class="panel-head">Visitor Access Control</div>
+          <div class="panel-body">
+            <button class="primary green" onclick="grantRemoteAccess()">Grant Access Remotely</button>
+            <div class="hint">Use this when a visitor is at the kiosk and you want to open the door manually.</div>
+
+            <div class="divider"></div>
+
+            <input id="access-visitor-name" placeholder="Visitor full name">
+            <input id="access-visitor-email" type="email" placeholder="Visitor email address">
+            <input id="access-expires-at" type="datetime-local">
+            <button class="primary" onclick="generateAccessCode()">Generate & Email Code</button>
+            <div class="post-result" id="access-result"></div>
+            <div class="hint">Generated codes are valid until the selected date and time, and can only be used once.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="state-incoming" class="screen">
+    <div class="ring-circle">
+      <svg viewBox="0 0 24 24">
+        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+      </svg>
+    </div>
+    <div class="incoming-title">Incoming Call</div>
+    <div class="incoming-from" id="incoming-from">Howard Kiosk</div>
+    <div class="incoming-btns">
+      <button class="btn-accept" onclick="acceptCall()">Accept</button>
+      <button class="btn-reject" onclick="rejectCall()">Reject</button>
+    </div>
+  </div>
+
+  <div id="state-in-call" class="screen">
+    <div id="video-grid">
+      <video id="remote-video" autoplay playsinline></video>
+      <video id="local-video" autoplay muted playsinline></video>
+      <div class="video-label" id="remote-label">Kiosk</div>
+    </div>
+
+    <div id="call-bar">
+      <div class="call-peer" id="call-peer">In call</div>
+      <div class="call-timer" id="call-timer"></div>
+    </div>
+
+    <div id="call-controls">
+      <button class="ctrl" id="mic-btn" onclick="toggleMic()">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+        </svg>
+      </button>
+
+      <button class="ctrl hangup" onclick="hangUp()">
+        <svg viewBox="0 0 24 24">
+          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.24.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+        </svg>
+      </button>
+
+      <button class="ctrl" id="cam-btn" onclick="toggleCam()">
+        <svg viewBox="0 0 24 24">
+          <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const WS_PROTO = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const WS_URL = `${WS_PROTO}//${window.location.host}`;
+const API_BASE = '';
+
+let ringCtx = null;
+let ringTimer = null;
+let ringNodes = [];
+
+function unlockRingtone() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+  if (!ringCtx && AudioContext) {
+    ringCtx = new AudioContext();
+  }
+
+  if (ringCtx && ringCtx.state === 'suspended') {
+    ringCtx.resume().catch(() => {});
+  }
+}
+
+document.addEventListener('click', unlockRingtone);
+document.addEventListener('touchstart', unlockRingtone);
+
+function startRingtone() {
+  try {
+    unlockRingtone();
+    if (!ringCtx) return;
+
+    stopRingtone();
+
+    function beep() {
+      const now = ringCtx.currentTime;
+
+      const master = ringCtx.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.95, now + 0.04);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.75);
+      master.connect(ringCtx.destination);
+
+      const osc1 = ringCtx.createOscillator();
+      osc1.type = 'square';
+      osc1.frequency.setValueAtTime(880, now);
+
+      const osc2 = ringCtx.createOscillator();
+      osc2.type = 'square';
+      osc2.frequency.setValueAtTime(1320, now);
+
+      osc1.connect(master);
+      osc2.connect(master);
+
+      osc1.start(now);
+      osc2.start(now + 0.08);
+
+      osc1.stop(now + 0.75);
+      osc2.stop(now + 0.75);
+
+      ringNodes.push(osc1, osc2, master);
+    }
+
+    beep();
+    ringTimer = setInterval(beep, 950);
+  } catch (e) {
+    console.log('Ringtone blocked:', e);
+  }
+}
+
+function stopRingtone() {
+  if (ringTimer) {
+    clearInterval(ringTimer);
+    ringTimer = null;
+  }
+
+  ringNodes.forEach(node => {
+    try {
+      if (node.stop) node.stop();
+      if (node.disconnect) node.disconnect();
+    } catch {}
+  });
+
+  ringNodes = [];
+}
+
+let ws = null;
+let myClientId = null;
+let currentRoomId = null;
+let incomingData = null;
+let pc = null;
+let localStream = null;
+let micMuted = false;
+let camOff = false;
+let timerInterval = null;
+let currentUser = null;
+
+connectWS();
+
+async function api(path, options) {
+  const response = await fetch(API_BASE + path, options);
+  const text = await response.text();
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = { message:text };
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Request failed');
+  }
+
+  return data;
+}
+
+function displayName(u) {
+  return `${u.TITLE ? u.TITLE + ' ' : ''}${u.FIRST_NAME || ''} ${u.LAST_NAME || ''}`.trim() || 'Staff';
+}
+
+async function login() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const hint = document.getElementById('login-hint');
+
+  if (!email || !password) {
+    hint.textContent = 'Please enter your email and password.';
+    return;
+  }
+
+  hint.textContent = 'Logging in...';
+
+  try {
+    const data = await api('/api/portal/login', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ email, password })
+    });
+
+    currentUser = data.user;
+
+    document.getElementById('staff-name').textContent = displayName(currentUser);
+    document.getElementById('staff-role').textContent =
+      currentUser.ROOM_NUMBER ? `Room ${currentUser.ROOM_NUMBER}` : 'Online for kiosk calls';
+
+    if (currentUser.AVAILABILITY_STATUS) {
+      document.getElementById('status-select').value = currentUser.AVAILABILITY_STATUS;
+    }
+
+    await startLocalMedia();
+
+    send({
+      type:'register',
+      payload:{
+        role:'receptionist',
+        userId:currentUser.USER_ID,
+        label:displayName(currentUser)
+      }
+    });
+
+    await loadModules(currentUser.USER_ID);
+    showSection('home-screen');
+    setStatus('connected', 'Online');
+    hint.textContent = '';
+
+  } catch (e) {
+    hint.textContent = e.message || 'Login failed.';
+  }
+}
+
+async function loadModules(userId) {
+  const modules = await api(`/api/portal/modules/${userId}`);
+  const select = document.getElementById('module-select');
+
+  select.innerHTML = '<option value="university">University Notice</option>' +
+    modules.map(m => `<option value="${m.MODULE_ID}">${escapeHtml(m.MODULE_CODE)} - ${escapeHtml(m.MODULE_NAME)}</option>`).join('');
+}
+
+function showPortalTab(name) {
+  document.querySelectorAll('.portal-tab').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.portal-panel').forEach(panel => panel.classList.remove('active'));
+
+  if (name === 'notice') {
+    document.getElementById('notice-tab-btn').classList.add('active');
+    document.getElementById('notice-panel').classList.add('active');
+  }
+
+  if (name === 'my-notices') {
+    document.getElementById('my-notices-tab-btn').classList.add('active');
+    document.getElementById('my-notices-panel').classList.add('active');
+    loadMyNotices();
+  }
+
+  if (name === 'access') {
+    document.getElementById('access-tab-btn').classList.add('active');
+    document.getElementById('access-panel').classList.add('active');
+  }
+}
+
+async function saveStatus() {
+  if (!currentUser) return;
+
+  await api('/api/portal/status', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      user_id:currentUser.USER_ID,
+      status:document.getElementById('status-select').value
+    })
+  });
+
+  document.getElementById('post-result').textContent = 'Status updated.';
+  setTimeout(() => document.getElementById('post-result').textContent = '', 1800);
+}
+
+async function postNotice() {
+  if (!currentUser) return;
+
+  const title = document.getElementById('notice-title').value.trim();
+  const description = document.getElementById('notice-description').value.trim();
+
+  if (!title || !description) {
+    document.getElementById('post-result').textContent = 'Please add a title and notice message.';
+    return;
+  }
+
+  await api('/api/portal/notices', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      user_id:currentUser.USER_ID,
+      module_id:document.getElementById('module-select').value,
+      title,
+      description
+    })
+  });
+
+  document.getElementById('notice-title').value = '';
+  document.getElementById('notice-description').value = '';
+  document.getElementById('post-result').textContent = 'Notice posted.';
+  loadMyNotices().catch(() => {});
+}
+
+async function loadMyNotices() {
+  if (!currentUser) return;
+
+  const list = document.getElementById('my-notices-list');
+  const result = document.getElementById('my-notices-result');
+
+  list.innerHTML = '<div class="hint">Loading notices...</div>';
+  result.textContent = '';
+
+  try {
+    const notices = await api(`/api/portal/my-notices/${currentUser.USER_ID}`);
+
+    if (!notices.length) {
+      list.innerHTML = '<div class="hint">You have not posted any active notices yet.</div>';
+      return;
+    }
+
+    list.innerHTML = notices.map(n => {
+      const moduleName = n.MODULE_ID
+        ? `${escapeHtml(n.MODULE_CODE || '')} - ${escapeHtml(n.MODULE_NAME || '')}`
+        : 'University Notice';
+
+      return `
+        <div class="notice-card">
+          <div class="notice-card-title">${escapeHtml(n.TITLE)}</div>
+          <div class="notice-card-meta">${moduleName}</div>
+          <div class="notice-card-desc">${escapeHtml(n.DESCRIPTION)}</div>
+          <button class="delete-notice-btn" onclick="deleteNotice(${Number(n.NOTICE_ID)})">Delete Notice</button>
+        </div>
+      `;
+    }).join('');
+
+  } catch (e) {
+    list.innerHTML = '';
+    result.textContent = e.message || 'Could not load notices.';
+  }
+}
+
+async function deleteNotice(noticeId) {
+  if (!currentUser) return;
+
+  if (!confirm('Delete this notice from the kiosk?')) return;
+
+  const result = document.getElementById('my-notices-result');
+  result.textContent = 'Deleting notice...';
+
+  try {
+    await api(`/api/portal/notices/${noticeId}`, {
+      method:'DELETE',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ user_id:currentUser.USER_ID })
+    });
+
+    result.textContent = 'Notice deleted.';
+    await loadMyNotices();
+
+  } catch (e) {
+    result.textContent = e.message || 'Could not delete notice.';
+  }
+}
+
+async function generateAccessCode() {
+  if (!currentUser) return;
+
+  const visitorName = document.getElementById('access-visitor-name').value.trim();
+  const visitorEmail = document.getElementById('access-visitor-email').value.trim();
+  const expiresAt = document.getElementById('access-expires-at').value;
+  const result = document.getElementById('access-result');
+
+  if (!visitorName || !visitorEmail || !expiresAt) {
+    result.textContent = 'Please enter visitor name, email, and expiry date/time.';
+    return;
+  }
+
+  result.textContent = 'Generating code...';
+
+  try {
+    const data = await api('/api/access/generate', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        user_id:currentUser.USER_ID,
+        visitor_name:visitorName,
+        visitor_email:visitorEmail,
+        expires_at:expiresAt
+      })
+    });
+
+    if (data.success) {
+      result.textContent = data.email_sent
+        ? `Code generated and emailed to ${visitorEmail}.`
+        : `Code generated: ${data.pin}. Email failed, share manually.`;
+
+      document.getElementById('access-visitor-name').value = '';
+      document.getElementById('access-visitor-email').value = '';
+      document.getElementById('access-expires-at').value = '';
+    } else {
+      result.textContent = data.message || 'Could not generate code.';
+    }
+  } catch (e) {
+    result.textContent = e.message || 'Could not generate code.';
+  }
+}
+
+async function grantRemoteAccess() {
+  if (!currentUser) return;
+
+  const result = document.getElementById('access-result');
+  result.textContent = 'Sending remote access grant...';
+
+  try {
+    const data = await api('/api/access/manual-grant', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        user_id:currentUser.USER_ID,
+        granted_by:displayName(currentUser)
+      })
+    });
+
+    result.textContent = data.ok ? 'Access granted on kiosk.' : 'Could not grant access.';
+  } catch (e) {
+    result.textContent = e.message || 'Could not grant access.';
+  }
+}
+
+function connectWS() {
+  setStatus('connecting', 'Connecting...');
+  ws = new WebSocket(WS_URL);
+
+  ws.onopen = () => setStatus('connected', 'Connected');
+
+  ws.onmessage = e => {
+    try { handleMsg(JSON.parse(e.data)); } catch {}
+  };
+
+  ws.onclose = () => {
+    setStatus('connecting', 'Reconnecting...');
+    setTimeout(connectWS, 3000);
+  };
+
+  ws.onerror = () => setStatus('error', 'Error');
+}
+
+function send(msg) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(msg));
+  }
+}
+
+function handleMsg(msg) {
+  const { type, payload } = msg;
+
+  switch (type) {
+    case 'registered':
+      myClientId = payload.clientId;
+      break;
+
+    case 'incoming_call':
+      incomingData = payload;
+      document.getElementById('incoming-from').textContent = payload.callerLabel || 'Kiosk';
+      showSection('state-incoming');
+      startRingtone();
+      break;
+
+    case 'call_accepted':
+      document.getElementById('call-peer').textContent = incomingData?.callerLabel || 'Kiosk';
+      createPC();
+      makeOffer();
+      break;
+
+    case 'offer':
+      handleOffer(payload);
+      break;
+
+    case 'answer':
+      if (pc) pc.setRemoteDescription(new RTCSessionDescription(payload.sdp)).catch(() => {});
+      break;
+
+    case 'ice_candidate':
+      if (pc && payload.candidate) pc.addIceCandidate(new RTCIceCandidate(payload.candidate)).catch(() => {});
+      break;
+
+    case 'call_ended':
+      teardown(false);
+      break;
+  }
+}
+
+async function startLocalMedia() {
+  if (localStream) return;
+
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video:{
+        width:{ideal:640},
+        height:{ideal:480},
+        facingMode:'user'
+      },
+      audio:{
+        echoCancellation:true,
+        noiseSuppression:true,
+        autoGainControl:true
+      }
+    });
+
+    document.getElementById('local-video').srcObject = localStream;
+  } catch (e) {
+    alert('Camera/mic access denied. Please allow camera and microphone access then reload.');
+  }
+}
+
+async function acceptCall() {
+  stopRingtone();
+
+  if (!incomingData) return;
+
+  currentRoomId = incomingData.roomId;
+  document.getElementById('call-peer').textContent = incomingData.callerLabel || 'Kiosk';
+  showSection('state-in-call');
+  createPC();
+
+  send({ type:'call_accept', payload:{ roomId:currentRoomId } });
+  incomingData = null;
+}
+
+function rejectCall() {
+  stopRingtone();
+
+  if (!incomingData) return;
+
+  send({ type:'call_reject', payload:{ roomId:incomingData.roomId } });
+  showSection('home-screen');
+  incomingData = null;
+}
+
+function hangUp() {
+  if (currentRoomId) {
+    send({ type:'hang_up', payload:{ roomId:currentRoomId } });
+  }
+
+  teardown(true);
+}
+
+function createPC() {
+  if (pc) pc.close();
+
+  pc = new RTCPeerConnection({ iceServers:[] });
+
+  if (localStream) {
+    localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+  }
+
+  pc.ontrack = e => {
+    document.getElementById('remote-video').srcObject = e.streams[0];
+    showSection('state-in-call');
+    if (!timerInterval) startTimer();
+  };
+
+  pc.onicecandidate = e => {
+    if (e.candidate) {
+      send({
+        type:'ice_candidate',
+        payload:{ roomId:currentRoomId, candidate:e.candidate }
+      });
+    }
+  };
+}
+
+async function makeOffer() {
+  const offer = await pc.createOffer({ offerToReceiveAudio:true, offerToReceiveVideo:true });
+  await pc.setLocalDescription(offer);
+  send({ type:'offer', payload:{ roomId:currentRoomId, sdp:pc.localDescription } });
+}
+
+async function handleOffer(payload) {
+  if (!pc) createPC();
+
+  await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+  const answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+
+  send({ type:'answer', payload:{ roomId:currentRoomId, sdp:pc.localDescription } });
+  showSection('state-in-call');
+
+  if (!timerInterval) startTimer();
+}
+
+function teardown() {
+  stopRingtone();
+
+  if (pc) {
+    pc.close();
+    pc = null;
+  }
+
+  document.getElementById('remote-video').srcObject = null;
+  currentRoomId = null;
+  stopTimer();
+
+  setTimeout(() => showSection('home-screen'), 1000);
+}
+
+function toggleMic() {
+  if (!localStream) return;
+
+  micMuted = !micMuted;
+  localStream.getAudioTracks().forEach(t => t.enabled = !micMuted);
+  document.getElementById('mic-btn').classList.toggle('muted', micMuted);
+}
+
+function toggleCam() {
+  if (!localStream) return;
+
+  camOff = !camOff;
+  localStream.getVideoTracks().forEach(t => t.enabled = !camOff);
+  document.getElementById('cam-btn').classList.toggle('muted', camOff);
+}
+
+function startTimer() {
+  const start = Date.now();
+
+  timerInterval = setInterval(() => {
+    const s = Math.floor((Date.now() - start) / 1000);
+    document.getElementById('call-timer').textContent =
+      `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  document.getElementById('call-timer').textContent = '';
+}
+
+function showSection(id) {
+  document.body.classList.toggle('call-active', id === 'state-in-call');
+
+  document.querySelectorAll('.screen').forEach(el => {
+    el.classList.toggle('active', el.id === id);
+  });
+}
+
+function setStatus(state, label) {
+  document.getElementById('dot').className = `dot ${state}`;
+  document.getElementById('status-label').textContent = label;
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+</script>
+</body>
+</html>
