@@ -144,6 +144,18 @@ function handleMessage(clientId, ws, msg) {
         return;
       }
 
+      // Kick any stale/ghost registration for the same user+role
+      // (phones suspend WebSockets when locked; without this, kiosks
+      // end up calling dead sockets).
+      for (const [oldId, c] of clients.entries()) {
+        if (c.role === role && String(c.userId) === String(userId) && oldId !== clientId) {
+          console.log(`[R] Replacing stale registration ${oldId} for ${role}/${userId}`);
+          if (c.roomId) endCall(c.roomId, 'error');
+          try { c.ws.terminate(); } catch {}
+          clients.delete(oldId);
+        }
+      }
+
       clients.set(clientId, {
         ws,
         role,
