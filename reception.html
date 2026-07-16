@@ -1499,6 +1499,37 @@
     html { scroll-behavior:auto; }
     .moving-border-button::before { animation:none; }
   }
+
+  #home-screen .rail-actions { margin-top:auto; padding-top:18px; }
+  #home-screen .logout-btn { width:100%; min-height:50px; display:flex; align-items:center; justify-content:center; gap:10px; border:1px solid rgba(255,255,255,.2); border-radius:13px; color:#fff; background:rgba(255,255,255,.08); font:700 14px inherit; cursor:pointer; transition:.2s ease; }
+  #home-screen .logout-btn:hover { background:#fff; color:var(--ukzn-deep); transform:translateY(-1px); }
+  #home-screen .admin-only { display:none; }
+  #home-screen.admin-mode .admin-only { display:flex; }
+  #home-screen.admin-mode .staff-only { display:none !important; }
+  #home-screen .admin-panel-body { display:block; padding:24px; }
+  #home-screen .admin-toolbar { display:grid; grid-template-columns:minmax(240px,1fr) auto auto; gap:12px; align-items:end; margin-bottom:20px; }
+  #home-screen .admin-toolbar label { display:grid; gap:7px; color:var(--ukzn-deep); font-weight:800; }
+  #home-screen .admin-toolbar select { min-height:48px; border:1px solid #cbd8e6; border-radius:11px; padding:0 13px; background:#fff; font:600 15px inherit; }
+  #home-screen .admin-table-wrap { overflow:auto; border:1px solid #dce6ef; border-radius:15px; background:#fff; }
+  #home-screen .admin-table { width:100%; border-collapse:collapse; font-size:13px; }
+  #home-screen .admin-table th { position:sticky; top:0; z-index:1; padding:13px 12px; color:#fff; background:var(--ukzn-deep); text-align:left; white-space:nowrap; }
+  #home-screen .admin-table td { max-width:280px; padding:12px; border-bottom:1px solid #e7edf3; color:#34465c; vertical-align:top; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #home-screen .admin-table tr:hover td { background:#f4f8fc; }
+  #home-screen .admin-row-actions { display:flex; gap:7px; }
+  #home-screen .admin-icon-btn { border:0; border-radius:8px; padding:8px 10px; color:#fff; background:var(--ukzn-blue); cursor:pointer; }
+  #home-screen .admin-icon-btn.danger { background:#b42318; }
+  #home-screen .admin-summary { margin:0 0 12px; color:var(--muted); font-weight:650; }
+  #admin-dialog { width:min(760px,92vw); max-height:88vh; border:0; border-radius:22px; padding:0; box-shadow:0 30px 90px rgba(6,35,68,.3); }
+  #admin-dialog::backdrop { background:rgba(5,28,55,.68); backdrop-filter:blur(5px); }
+  .admin-dialog-head { display:flex; align-items:center; justify-content:space-between; padding:22px 24px; color:#fff; background:var(--ukzn-deep); }
+  .admin-dialog-head h2 { margin:0; font-size:23px; }
+  .admin-dialog-close { border:0; background:transparent; color:#fff; font-size:25px; cursor:pointer; }
+  .admin-form { display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:24px; overflow:auto; max-height:62vh; }
+  .admin-form label { display:grid; gap:7px; color:#233a55; font-weight:750; font-size:13px; }
+  .admin-form input,.admin-form select,.admin-form textarea { width:100%; min-height:45px; border:1px solid #cbd8e6; border-radius:10px; padding:10px 12px; font:500 14px inherit; box-sizing:border-box; }
+  .admin-form textarea { min-height:105px; resize:vertical; }
+  .admin-dialog-actions { display:flex; justify-content:flex-end; gap:10px; padding:18px 24px; border-top:1px solid #e4ebf2; }
+  @media(max-width:820px){ #home-screen .admin-toolbar{grid-template-columns:1fr 1fr} #home-screen .admin-toolbar label{grid-column:1/-1} .admin-form{grid-template-columns:1fr} }
   </style>
 </head>
 
@@ -1610,9 +1641,13 @@
             <span class="nav-tile-icon" aria-hidden="true"><i class="fa-solid fa-key"></i></span>
             <span class="nav-tile-copy"><strong>Access Control</strong><small>Manage visitor entry</small></span>
           </button>
+          <button class="portal-tab admin-only" id="admin-tab-btn" role="tab" aria-controls="admin-panel" aria-selected="false" onclick="showPortalTab('admin')">
+            <span class="nav-tile-icon" aria-hidden="true"><i class="fa-solid fa-database"></i></span>
+            <span class="nav-tile-copy"><strong>Administration</strong><small>Manage system records</small></span>
+          </button>
         </div>
 
-        <section class="panel status-panel">
+        <section class="panel status-panel staff-only">
           <div class="panel-head"><i class="fa-solid fa-signal" aria-hidden="true"></i> Availability</div>
           <div class="panel-body">
             <label class="status-label" for="status-select">Current staff status</label>
@@ -1629,6 +1664,7 @@
             <div class="hint">This status is shown to students at the kiosk.</div>
           </div>
         </section>
+        <div class="rail-actions"><button class="logout-btn" type="button" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</button></div>
       </aside>
 
       <main class="dashboard-main">
@@ -1686,6 +1722,20 @@
               <div class="hint">Codes remain valid until the selected time and can only be used once.</div>
             </div>
           </div>
+
+          <div class="portal-panel" id="admin-panel" role="tabpanel" aria-labelledby="admin-tab-btn">
+            <div class="panel-head">Database administration</div>
+            <div class="admin-panel-body">
+              <div class="admin-toolbar">
+                <label>Database table<select id="admin-table-select" onchange="loadAdminRows()"></select></label>
+                <button class="small-btn" type="button" onclick="openAdminEditor()"><i class="fa-solid fa-plus"></i> Add record</button>
+                <button class="small-btn" type="button" onclick="loadAdminRows()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+              </div>
+              <p class="admin-summary" id="admin-summary">Loading database structure...</p>
+              <div class="post-result" id="admin-result"></div>
+              <div class="admin-table-wrap"><table class="admin-table"><thead id="admin-table-head"></thead><tbody id="admin-table-body"></tbody></table></div>
+            </div>
+          </div>
         </section>
       </main>
     </div>
@@ -1738,6 +1788,12 @@
     </div>
   </div>
 </div>
+
+<dialog id="admin-dialog">
+  <div class="admin-dialog-head"><h2 id="admin-dialog-title">Add record</h2><button class="admin-dialog-close" type="button" onclick="closeAdminEditor()" aria-label="Close">&times;</button></div>
+  <form id="admin-form" class="admin-form" onsubmit="event.preventDefault();saveAdminRecord()"></form>
+  <div class="admin-dialog-actions"><button class="small-btn" type="button" onclick="closeAdminEditor()">Cancel</button><button class="primary" type="button" onclick="saveAdminRecord()">Save changes</button></div>
+</dialog>
 
 <script>
 const WS_PROTO = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -1832,10 +1888,18 @@ let micMuted = false;
 let camOff = false;
 let timerInterval = null;
 let currentUser = null;
+let authToken = sessionStorage.getItem('howardPortalToken') || '';
+let heartbeatTimer = null;
+let adminSchema = [];
+let adminRows = [];
+let adminEditingIndex = null;
 
 connectWS();
 
 async function api(path, options) {
+  options = options || {};
+  options.headers = new Headers(options.headers || {});
+  if (authToken) options.headers.set('Authorization', `Bearer ${authToken}`);
   const response = await fetch(API_BASE + path, options);
   const text = await response.text();
 
@@ -1847,7 +1911,8 @@ async function api(path, options) {
   }
 
   if (!response.ok) {
-    throw new Error(data.message || 'Request failed');
+    if (response.status === 401 && authToken) clearLocalSession();
+    throw new Error(data.message || data.error || `Request failed (${response.status})`);
   }
 
   return data;
@@ -1870,36 +1935,15 @@ async function login() {
   hint.textContent = 'Logging in...';
 
   try {
-    const data = await api('/api/portal/login', {
+    const data = await api('/api/auth/login', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ email, password })
+      body:JSON.stringify({ email, password, device_label:navigator.userAgent })
     });
 
-    currentUser = data.user;
-
-    document.getElementById('staff-name').textContent = displayName(currentUser);
-    document.getElementById('staff-role').textContent =
-      currentUser.ROOM_NUMBER ? `Room ${currentUser.ROOM_NUMBER}` : 'Online for kiosk calls';
-
-    if (currentUser.AVAILABILITY_STATUS) {
-      document.getElementById('status-select').value = currentUser.AVAILABILITY_STATUS;
-    }
-
-    await startLocalMedia();
-
-    send({
-      type:'register',
-      payload:{
-        role:'receptionist',
-        userId:currentUser.USER_ID,
-        label:displayName(currentUser)
-      }
-    });
-
-    await loadModules(currentUser.USER_ID);
-    showSection('home-screen');
-    setStatus('connected', 'Online');
+    authToken = data.token;
+    sessionStorage.setItem('howardPortalToken', authToken);
+    await activateUser(data.user);
     hint.textContent = '';
 
   } catch (e) {
@@ -1931,6 +1975,10 @@ function showPortalTab(name) {
     access: {
       title: 'Access Control',
       description: 'Handle visitor entry and issue time-limited access codes.'
+    },
+    admin: {
+      title: 'Administration',
+      description: 'Manage users, notices, modules, timetable slots, and system records.'
     }
   };
 
@@ -1950,6 +1998,12 @@ function showPortalTab(name) {
     document.getElementById('access-panel').classList.add('active');
   }
 
+  if (name === 'admin') {
+    document.getElementById('admin-tab-btn').classList.add('active');
+    document.getElementById('admin-panel').classList.add('active');
+    if (adminSchema.length) loadAdminRows();
+  }
+
   document.querySelectorAll('.portal-tab').forEach(btn => {
     btn.setAttribute('aria-selected', String(btn.classList.contains('active')));
   });
@@ -1958,6 +2012,71 @@ function showPortalTab(name) {
   if (copy) {
     document.getElementById('dashboard-title').textContent = copy.title;
     document.getElementById('dashboard-description').textContent = copy.description;
+  }
+}
+
+async function activateUser(user) {
+  currentUser = user;
+  const isAdmin = String(user.ROLE || '').toLowerCase() === 'admin';
+  const home = document.getElementById('home-screen');
+  home.classList.toggle('admin-mode', isAdmin);
+  document.getElementById('staff-name').textContent = displayName(user);
+  document.getElementById('staff-role').textContent = isAdmin
+    ? 'System Administrator'
+    : (user.ROOM_NUMBER ? `Room ${user.ROOM_NUMBER}` : 'Online for kiosk calls');
+
+  if (isAdmin) {
+    showSection('home-screen');
+    showPortalTab('admin');
+    await loadAdminSchema();
+    setStatus('connected', 'Admin session');
+  } else {
+    if (user.AVAILABILITY_STATUS) document.getElementById('status-select').value = user.AVAILABILITY_STATUS;
+    await startLocalMedia();
+    send({type:'register',payload:{role:'receptionist',userId:user.USER_ID,label:displayName(user),token:authToken}});
+    await loadModules(user.USER_ID);
+    showSection('home-screen');
+    showPortalTab('notice');
+    setStatus('connected', 'Online');
+  }
+  startHeartbeat();
+}
+
+function startHeartbeat() {
+  clearInterval(heartbeatTimer);
+  heartbeatTimer = setInterval(() => api('/api/auth/heartbeat',{method:'POST'}).catch(() => {}), 60000);
+}
+
+function clearLocalSession() {
+  authToken = '';
+  currentUser = null;
+  sessionStorage.removeItem('howardPortalToken');
+  clearInterval(heartbeatTimer);
+  heartbeatTimer = null;
+}
+
+async function logout() {
+  if (!confirm('Log out of the staff portal?')) return;
+  try { await api('/api/auth/logout',{method:'POST'}); } catch (_) {}
+  if (localStream) {
+    localStream.getTracks().forEach(track => track.stop());
+    localStream = null;
+  }
+  try { send({type:'unregister',payload:{}}); } catch (_) {}
+  clearLocalSession();
+  document.getElementById('login-password').value = '';
+  document.getElementById('home-screen').classList.remove('admin-mode');
+  showSection('login-screen');
+  setStatus('connecting','Signed out');
+}
+
+async function restoreSession() {
+  if (!authToken) return;
+  try {
+    const data = await api('/api/auth/session');
+    await activateUser(data.user);
+  } catch (_) {
+    clearLocalSession();
   }
 }
 
@@ -2131,11 +2250,134 @@ async function grantRemoteAccess() {
   }
 }
 
+function selectedAdminMeta() {
+  const name = document.getElementById('admin-table-select').value;
+  return adminSchema.find(table => table.name === name);
+}
+
+async function loadAdminSchema() {
+  const result = document.getElementById('admin-result');
+  try {
+    adminSchema = await api('/api/admin/tables');
+    const preferred = ['USERS','NOTICES','MODULES','TIMETABLE_SLOTS','LECTURERS','MODULE_LECTURER','RECEPTIONISTS','ACCESS_CODES','ACCESS_LOGS','CALL_LOG','DOOR_LOG','MEETINGS','MEETING_INVITEES'];
+    adminSchema.sort((a,b) => preferred.indexOf(a.name) - preferred.indexOf(b.name));
+    document.getElementById('admin-table-select').innerHTML = adminSchema
+      .map(table => `<option value="${escapeHtml(table.name)}">${escapeHtml(table.name.replaceAll('_',' '))}</option>`).join('');
+    result.textContent = '';
+    await loadAdminRows();
+  } catch (error) {
+    result.textContent = error.message || 'Could not load the database structure.';
+  }
+}
+
+async function loadAdminRows() {
+  const meta = selectedAdminMeta();
+  if (!meta) return;
+  const head = document.getElementById('admin-table-head');
+  const body = document.getElementById('admin-table-body');
+  const result = document.getElementById('admin-result');
+  body.innerHTML = '<tr><td>Loading records...</td></tr>';
+  result.textContent = '';
+  try {
+    const data = await api(`/api/admin/table/${encodeURIComponent(meta.name)}/rows?limit=200`);
+    adminRows = data.rows || [];
+    const columns = meta.columns.map(column => column.COLUMN_NAME);
+    head.innerHTML = `<tr><th>Actions</th>${columns.map(name => `<th>${escapeHtml(name)}</th>`).join('')}</tr>`;
+    body.innerHTML = adminRows.length ? adminRows.map((row,index) => `
+      <tr><td><div class="admin-row-actions"><button class="admin-icon-btn" type="button" onclick="openAdminEditor(${index})" title="Edit"><i class="fa-solid fa-pen"></i></button><button class="admin-icon-btn danger" type="button" onclick="deleteAdminRecord(${index})" title="Delete"><i class="fa-solid fa-trash"></i></button></div></td>${columns.map(name => `<td title="${escapeHtml(row[name] ?? '')}">${escapeHtml(row[name] ?? '')}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${columns.length + 1}">No records found.</td></tr>`;
+    document.getElementById('admin-summary').textContent = `${data.total} record${data.total === 1 ? '' : 's'} in ${meta.name.replaceAll('_',' ')}. Showing up to 200.`;
+  } catch (error) {
+    body.innerHTML = '';
+    result.textContent = error.message || 'Could not load records.';
+  }
+}
+
+function adminField(column, value) {
+  const name = column.COLUMN_NAME;
+  const type = String(column.DATA_TYPE || '').toLowerCase();
+  const required = column.IS_NULLABLE === 'NO' && column.COLUMN_DEFAULT == null ? 'required' : '';
+  const safeValue = escapeHtml(value ?? '');
+  let control;
+  if (String(column.COLUMN_TYPE).toLowerCase() === 'tinyint(1)') {
+    control = `<select name="${name}"><option value="1" ${String(value) === '1' ? 'selected' : ''}>Yes / Active</option><option value="0" ${String(value) === '0' ? 'selected' : ''}>No / Inactive</option></select>`;
+  } else if (type === 'text') {
+    control = `<textarea name="${name}" ${required}>${safeValue}</textarea>`;
+  } else {
+    const inputType = ['int','bigint','decimal','float','double'].includes(type) ? 'number' : type === 'date' ? 'date' : type === 'datetime' || type === 'timestamp' ? 'datetime-local' : type === 'time' ? 'time' : name === 'EMAIL' ? 'email' : 'text';
+    let normalized = value ?? '';
+    if (inputType === 'datetime-local' && normalized) normalized = String(normalized).replace(' ','T').slice(0,16);
+    control = `<input name="${name}" type="${inputType}" value="${escapeHtml(normalized)}" ${required}>`;
+  }
+  return `<label><span>${escapeHtml(name.replaceAll('_',' '))}</span>${control}</label>`;
+}
+
+function openAdminEditor(index = null) {
+  const meta = selectedAdminMeta();
+  if (!meta) return;
+  adminEditingIndex = Number.isInteger(index) ? index : null;
+  const row = adminEditingIndex === null ? {} : adminRows[adminEditingIndex];
+  const fields = meta.columns
+    .filter(column => column.editable && !(adminEditingIndex === null && String(column.EXTRA || '').includes('auto_increment')))
+    .map(column => adminField(column,row[column.COLUMN_NAME])).join('');
+  const password = meta.name === 'USERS' ? `<label><span>${adminEditingIndex === null ? 'PASSWORD' : 'NEW PASSWORD (leave blank to keep current)'}</span><input name="PASSWORD" type="password" ${adminEditingIndex === null ? 'required' : ''} minlength="10" autocomplete="new-password"></label>` : '';
+  document.getElementById('admin-dialog-title').textContent = `${adminEditingIndex === null ? 'Add' : 'Edit'} ${meta.name.replaceAll('_',' ')}`;
+  document.getElementById('admin-form').innerHTML = fields + password;
+  document.getElementById('admin-dialog').showModal();
+}
+
+function closeAdminEditor() {
+  document.getElementById('admin-dialog').close();
+  adminEditingIndex = null;
+}
+
+async function saveAdminRecord() {
+  const meta = selectedAdminMeta();
+  const form = document.getElementById('admin-form');
+  if (!meta || !form.reportValidity()) return;
+  const values = Object.fromEntries(new FormData(form).entries());
+  const result = document.getElementById('admin-result');
+  result.textContent = 'Saving changes...';
+  try {
+    if (adminEditingIndex === null) {
+      await api(`/api/admin/table/${meta.name}/row`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(values)});
+    } else {
+      const original = adminRows[adminEditingIndex];
+      const key = Object.fromEntries(meta.primary_keys.map(name => [name, original[name]]));
+      await api(`/api/admin/table/${meta.name}/row`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({key,values})});
+    }
+    closeAdminEditor();
+    result.textContent = 'Changes saved.';
+    await loadAdminRows();
+  } catch (error) {
+    result.textContent = error.message || 'Could not save this record.';
+  }
+}
+
+async function deleteAdminRecord(index) {
+  const meta = selectedAdminMeta();
+  const row = adminRows[index];
+  if (!meta || !row || !confirm(`Permanently delete this ${meta.name} record?`)) return;
+  const key = Object.fromEntries(meta.primary_keys.map(name => [name,row[name]]));
+  const result = document.getElementById('admin-result');
+  try {
+    await api(`/api/admin/table/${meta.name}/row`,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({key})});
+    result.textContent = 'Record deleted.';
+    await loadAdminRows();
+  } catch (error) {
+    result.textContent = error.message || 'Could not delete this record. It may still be referenced by another table.';
+  }
+}
+
 function connectWS() {
   setStatus('connecting', 'Connecting...');
   ws = new WebSocket(WS_URL);
 
-  ws.onopen = () => setStatus('connected', 'Connected');
+  ws.onopen = () => {
+    setStatus('connected', 'Connected');
+    if (currentUser && String(currentUser.ROLE || '').toLowerCase() !== 'admin') {
+      send({type:'register',payload:{role:'receptionist',userId:currentUser.USER_ID,label:displayName(currentUser),token:authToken}});
+    }
+  };
 
   ws.onmessage = e => {
     try { handleMsg(JSON.parse(e.data)); } catch {}
@@ -2161,6 +2403,13 @@ function handleMsg(msg) {
   switch (type) {
     case 'registered':
       myClientId = payload.clientId;
+      break;
+
+    case 'registration_denied':
+    case 'session_replaced':
+      clearLocalSession();
+      showSection('login-screen');
+      document.getElementById('login-hint').textContent = payload?.message || 'This session is no longer active. Please log in again.';
       break;
 
     case 'incoming_call':
@@ -2405,6 +2654,8 @@ function escapeHtml(value) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
 }
+
+restoreSession();
 </script>
 </body>
 </html>
